@@ -1448,6 +1448,109 @@
         <p><strong>GTM Preview vs. Live.</strong> Preview mode uses a special cookie in your browser. Other users visiting the site will NOT see preview traffic. Always test in preview BEFORE publishing to avoid shipping a broken tag to the live environment.</p>
       </div>
 
+      <h2>Conversion Linker</h2>
+      <p>The <strong>Conversion Linker</strong> is a built-in GTM tag type that is required for accurate Google Ads conversion tracking. It is one of the most commonly missing tags on client websites — and without it, a portion of Google Ads conversions will go unattributed.</p>
+
+      <h3>The Problem It Solves</h3>
+      <p>When someone clicks a Google Ad, Google appends a <strong>click ID parameter</strong> (<code>gclid</code>) to the landing page URL. Example:</p>
+      <div class="code-block">
+https://www.example.com/landing-page<span class="hl-str">?gclid=CjwKCAjw...</span>
+      </div>
+      <p>The Google Ads conversion tag needs to read this <code>gclid</code> to credit the conversion back to the right ad. But there are two problems:</p>
+      <ul>
+        <li>The user may navigate away from the landing page before converting — the gclid disappears from the URL.</li>
+        <li>Safari (ITP), Firefox, and other privacy-focused browsers actively block third-party cookies that would normally carry this information.</li>
+      </ul>
+
+      <h3>How the Conversion Linker Fixes It</h3>
+      <div class="flow-diagram" style="padding:1.25rem">
+        <div class="flow-row">
+          <div class="flow-box user">User clicks<br>Google Ad<div class="flow-label">gclid in URL</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box gtm-box">Conversion Linker<br>fires (All Pages)<div class="flow-label">reads gclid from URL</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box browser">First-party cookie<br><code style="font-size:0.72rem">_gcl_aw</code><div class="flow-label">stored on domain</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box platform">User converts<br>on page 4<div class="flow-label">cookie still present</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box server">Google Ads<br>records conversion<div class="flow-label">attributed to click</div></div>
+        </div>
+      </div>
+      <p>The Conversion Linker immediately reads the gclid (and <code>wbraid</code> / <code>gbraid</code> for iOS) from the URL and writes it to a <strong>first-party cookie</strong> on the client's domain. Since it is first-party, browsers cannot block it. When the user converts — even pages later — the Google Ads conversion tag reads the cookie and sends the attribution.</p>
+
+      <h3>First-Party Cookies Written</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Cookie Name</th><th>Contains</th><th>Used By</th></tr></thead>
+          <tbody>
+            <tr><td><code>_gcl_aw</code></td><td>Google click ID (gclid) from URL auto-tagging</td><td>Google Ads conversion tracking</td></tr>
+            <tr><td><code>_gcl_gb</code></td><td>gbraid — cross-channel click ID for web-to-app</td><td>Google Ads (app campaigns)</td></tr>
+            <tr><td><code>_gcl_dc</code></td><td>DoubleClick click ID (dclid)</td><td>CM360 / Display &amp; Video 360</td></tr>
+            <tr><td><code>_gac_*</code></td><td>Google Ads campaign data for GA4</td><td>GA4 &#8594; Google Ads linking</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>How to Set Up in GTM</h3>
+      <ol class="steps">
+        <li>
+          <strong>Tags &#8594; New &#8594; Tag Configuration</strong>
+          <span>In the tag type list, select <strong>Conversion Linker</strong> (it is a native Google tag type — no custom HTML needed).</span>
+        </li>
+        <li>
+          <strong>Leave all settings as default</strong>
+          <span>The default settings work for most setups. "Enable linking across domains" is only needed for cross-domain journeys (e.g., client redirects through a payment gateway on a different domain).</span>
+        </li>
+        <li>
+          <strong>Set the trigger to "All Pages"</strong>
+          <span>This is critical. The Conversion Linker must fire on the landing page — the very first page the user arrives on after clicking the ad. If it only fires on the thank-you page, the gclid is already gone.</span>
+        </li>
+        <li>
+          <strong>Name it and publish</strong>
+          <span>Name: <code>Google Ads - Conversion Linker - All Pages</code>. Save, preview, and publish.</span>
+        </li>
+      </ol>
+
+      <div class="callout warn">
+        <span class="callout-icon">&#9888;</span>
+        <p><strong>Order matters.</strong> The Conversion Linker must fire <em>before</em> the Google Ads conversion tag on any given page load. GTM fires tags in sequence — placing it before other Google tags in the tag order, or simply ensuring it has a lower tag sequence number, handles this automatically.</p>
+      </div>
+
+      <h3>How to Validate the Conversion Linker</h3>
+      <ol class="steps">
+        <li>
+          <strong>Open Chrome DevTools &#8594; Application tab &#8594; Cookies</strong>
+          <span>Expand the Cookies section in the left sidebar and select the client's domain.</span>
+        </li>
+        <li>
+          <strong>Visit the landing page with a test gclid in the URL</strong>
+          <span>Navigate to: <code>https://client-site.com/?gclid=test_click_id_123</code></span>
+        </li>
+        <li>
+          <strong>Check for the <code>_gcl_aw</code> cookie</strong>
+          <span>Within seconds of the page loading, a cookie named <code>_gcl_aw</code> should appear with a value containing your test gclid. If it does not appear, the Conversion Linker is not firing or GTM is not published.</span>
+        </li>
+        <li>
+          <strong>Verify it persists across pages</strong>
+          <span>Navigate to 2–3 other pages on the same site. The <code>_gcl_aw</code> cookie should still be present throughout the session.</span>
+        </li>
+      </ol>
+
+      <div class="devtools-mock" style="font-size:0.76rem">
+        <div class="devtools-toolbar">
+          <span class="dt-tab">Elements</span>
+          <span class="dt-tab">Console</span>
+          <span class="dt-tab">Network</span>
+          <span class="dt-tab active">Application</span>
+        </div>
+        <div class="devtools-body">
+          <div class="dt-row header"><span>Name</span><span>Value (truncated)</span><span>Expires</span></div>
+          <div class="dt-row hit"><span class="dt-name">_gcl_aw</span><span>GCL.1718000000.test_click_id_123</span><span>90 days</span></div>
+          <div class="dt-row hit"><span class="dt-name">_gac_UA-XXXXX-X</span><span>1.1718000000.test_click_id_123</span><span>90 days</span></div>
+          <div class="dt-row miss"><span class="dt-name">(no _gcl_aw found)</span><span>Conversion Linker not firing</span><span>—</span></div>
+        </div>
+      </div>
+
       <h2>GTM Tag Naming Convention</h2>
       <p>Consistent naming saves time for everyone on the team. Use this format:</p>
       <div class="code-block">
@@ -1457,6 +1560,7 @@
 Examples:
   GA4 - Config - Base Tag
   GA4 - Event - Purchase
+  Google Ads - Conversion Linker - All Pages
   Google Ads - Conversion - Form Submit
   Meta - Pixel - Base Code
   Meta - Event - Purchase (Thank You Page)
@@ -1507,12 +1611,13 @@ Examples:
       </ul>
 
       <h2>GTM Health Check</h2>
-      <p class="checklist-progress" id="gtm-progress">0 of 4 complete</p>
+      <p class="checklist-progress" id="gtm-progress">0 of 5 complete</p>
       <ul class="checklist" id="checklist-gtm">
-        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">GTM container has been published (not just saved / in preview)</span></li>
-        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">Tags verified in GTM Preview mode before publishing</span></li>
-        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">GTM container snippet is present in the website source (search for "googletagmanager.com/gtm.js" in page source)</span></li>
-        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">No leftover test / dev tags in GTM that are still active on production</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 5)"><div class="check-box"></div><span class="check-text">GTM container has been published (not just saved / in preview)</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 5)"><div class="check-box"></div><span class="check-text">Tags verified in GTM Preview mode before publishing</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 5)"><div class="check-box"></div><span class="check-text">GTM container snippet is present in the website source (search for "googletagmanager.com/gtm.js" in page source)</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 5)"><div class="check-box"></div><span class="check-text"><strong>Conversion Linker</strong> tag is present in GTM, set to All Pages trigger, and <code>_gcl_aw</code> cookie appears after visiting the landing page with <code>?gclid=test</code> in the URL</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 5)"><div class="check-box"></div><span class="check-text">No leftover test / dev tags in GTM that are still active on production</span></li>
       </ul>
 
       <h2>Platform-Specific Checks</h2>
