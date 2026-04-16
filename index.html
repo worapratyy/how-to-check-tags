@@ -327,6 +327,38 @@
     .gtm-col.vars    .gtm-col-label { color: #8E44AD; }
     .gtm-item { font-size: 0.78rem; padding: 0.35rem 0.5rem; background: #F8FAFF; border-radius: 5px; margin-bottom: 0.35rem; color: #2d3a52; }
 
+    /* ── Quiz animations ── */
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-7px); }
+      40%      { transform: translateX(7px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+    @keyframes pulse-ok {
+      0%   { box-shadow: 0 0 0 0 rgba(39,174,96,0.45); }
+      70%  { box-shadow: 0 0 0 10px rgba(39,174,96,0); }
+      100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
+    }
+    .quiz-opt.wrong   { animation: shake 0.4s ease; }
+    .quiz-opt.correct { animation: pulse-ok 0.5s ease; }
+    .quiz-retry-btn {
+      margin-top: 0.75rem; font-size: 0.82rem;
+      padding: 0.4rem 1.1rem; border-color: var(--navy);
+    }
+    .quiz-progress {
+      font-size: 0.8rem; color: var(--gray); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .quiz-pip {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--border); border: 2px solid var(--border);
+      transition: background 0.2s, border-color 0.2s;
+      flex-shrink: 0;
+    }
+    .quiz-pip.done    { background: var(--ok); border-color: var(--ok); }
+    .quiz-pip.current { border-color: var(--navy); background: transparent; }
+
     @media (max-width: 768px) {
       .sidebar { width: 0; display: none; }
       .main { padding: 1.5rem 1rem 3rem; }
@@ -1312,79 +1344,101 @@ Examples:
     <!-- ═══════════════════════════════════════════════════════ S7: Quiz -->
     <div class="section" id="s7">
       <h1>Knowledge Check</h1>
-      <p class="lead">Test what you have learned. Select the best answer for each question.</p>
+      <p class="lead">Select the best answer for each question. If you pick the wrong answer you can retry that question. Complete all six to see your score.</p>
+      <div class="quiz-progress">
+        <div class="quiz-pip" id="pip-q1"></div>
+        <div class="quiz-pip" id="pip-q2"></div>
+        <div class="quiz-pip" id="pip-q3"></div>
+        <div class="quiz-pip" id="pip-q4"></div>
+        <div class="quiz-pip" id="pip-q5"></div>
+        <div class="quiz-pip" id="pip-q6"></div>
+        <span id="quiz-progress-label">0 / 6 answered</span>
+      </div>
 
+      <!-- Q1 -->
       <div class="quiz-card" id="q1">
         <div class="quiz-q">1. A campaign has been running for 2 weeks with zero reported conversions, but the client says sales are happening. What is the MOST likely cause?</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="answerQuiz('q1', this, false, 'The campaign settings are irrelevant if the conversion tag has never confirmed firing.')">The campaign bidding strategy is wrong.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q1', this, true, 'Correct. The conversion tag is either not installed on the confirmation page, not firing, or firing on the wrong page. Always validate the conversion tag first.')">The conversion tag is not installed or not firing on the confirmation page.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q1', this, false, 'Audience targeting affects who sees the ads, not whether conversions are tracked.')">The audience targeting is too narrow.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q1', this, false, 'Ad creative does not affect whether a conversion tag records completed purchases.')">The ad creative is not engaging enough.</div>
+          <div class="quiz-opt" data-qid="q1" data-idx="0" onclick="answerQuiz('q1',0)">The campaign bidding strategy is wrong.</div>
+          <div class="quiz-opt" data-qid="q1" data-idx="1" onclick="answerQuiz('q1',1)">The conversion tag is not installed or not firing on the confirmation page.</div>
+          <div class="quiz-opt" data-qid="q1" data-idx="2" onclick="answerQuiz('q1',2)">The audience targeting is too narrow.</div>
+          <div class="quiz-opt" data-qid="q1" data-idx="3" onclick="answerQuiz('q1',3)">The ad creative is not engaging enough.</div>
         </div>
         <div class="quiz-feedback" id="q1-fb"></div>
+        <div id="q1-retry" style="display:none"><button class="btn btn-outline quiz-retry-btn" onclick="retryQuestion('q1')">Try Again</button></div>
       </div>
 
+      <!-- Q2 -->
       <div class="quiz-card" id="q2">
         <div class="quiz-q">2. You open Chrome DevTools, go to the Network tab, filter by "facebook.net", and see no requests. What does this most likely mean?</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="answerQuiz('q2', this, false, 'Meta\'s server being down would be highly unusual and would affect global campaigns. A missing tag is far more likely.')">Meta\'s servers are down.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q2', this, false, 'HTTPS has no bearing on whether a pixel loads or not.')">The website is using HTTP instead of HTTPS.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q2', this, true, 'Correct. If the Meta Pixel base code is not installed on the page, the fbevents.js library never loads, and no requests to facebook.net will appear.')">The Meta Pixel base code is not installed on this page.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q2', this, false, 'GA4 sends requests to google-analytics.com, not facebook.net.')">The GA4 tag is blocking the Meta Pixel from loading.</div>
+          <div class="quiz-opt" data-qid="q2" data-idx="0" onclick="answerQuiz('q2',0)">Meta's servers are down.</div>
+          <div class="quiz-opt" data-qid="q2" data-idx="1" onclick="answerQuiz('q2',1)">The website is using HTTP instead of HTTPS.</div>
+          <div class="quiz-opt" data-qid="q2" data-idx="2" onclick="answerQuiz('q2',2)">The Meta Pixel base code is not installed on this page.</div>
+          <div class="quiz-opt" data-qid="q2" data-idx="3" onclick="answerQuiz('q2',3)">The GA4 tag is blocking the Meta Pixel from loading.</div>
         </div>
         <div class="quiz-feedback" id="q2-fb"></div>
+        <div id="q2-retry" style="display:none"><button class="btn btn-outline quiz-retry-btn" onclick="retryQuestion('q2')">Try Again</button></div>
       </div>
 
+      <!-- Q3 -->
       <div class="quiz-card" id="q3">
         <div class="quiz-q">3. In GTM, you add a new conversion tag and click Save. Is this tag now live on the website?</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="answerQuiz('q3', this, false, 'Saving only stores the draft in GTM. The live website is unchanged until you publish.')">Yes — saving in GTM immediately updates the live website.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q3', this, true, 'Correct. In GTM, you must go through Preview (to test) and then Submit + Publish to push changes to the live website. Save only stores a draft.')">No — you must Submit and Publish the container for changes to go live.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q3', this, false, 'The developer does not need to re-install anything. GTM handles deployment automatically once published.')">No — you need the developer to re-install the GTM snippet first.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q3', this, false, 'Preview mode lets you test but does not make the tag live for real visitors.')">Yes — but only in GTM Preview mode, which is live for all users.</div>
+          <div class="quiz-opt" data-qid="q3" data-idx="0" onclick="answerQuiz('q3',0)">Yes — saving in GTM immediately updates the live website.</div>
+          <div class="quiz-opt" data-qid="q3" data-idx="1" onclick="answerQuiz('q3',1)">No — you must Submit and Publish the container for changes to go live.</div>
+          <div class="quiz-opt" data-qid="q3" data-idx="2" onclick="answerQuiz('q3',2)">No — you need the developer to re-install the GTM snippet first.</div>
+          <div class="quiz-opt" data-qid="q3" data-idx="3" onclick="answerQuiz('q3',3)">Yes — but only in GTM Preview mode, which is live for all users.</div>
         </div>
         <div class="quiz-feedback" id="q3-fb"></div>
+        <div id="q3-retry" style="display:none"><button class="btn btn-outline quiz-retry-btn" onclick="retryQuestion('q3')">Try Again</button></div>
       </div>
 
+      <!-- Q4 -->
       <div class="quiz-card" id="q4">
         <div class="quiz-q">4. Meta Pixel Helper shows "Pixel activated multiple times" on the thank-you page. What should you do?</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="answerQuiz('q4', this, false, 'Increasing budget does not fix double-counting. In fact, it would make the inflated reporting worse.')">Increase the campaign budget to compensate for the potential under-reporting.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q4', this, false, 'The campaign does not need to be paused — this is a tracking issue, not a campaign delivery issue.')">Pause the campaign immediately until it is resolved.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q4', this, true, 'Correct. Multiple activations mean the Pixel base code (or conversion event) is firing more than once per page load, causing duplicate conversions. Flag it to the developer to remove the duplicate instance.')">Flag it to the developer — the Pixel is installed twice, causing duplicate conversion counting.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q4', this, false, 'Multiple activations indicate duplicate code, not a missing Pixel ID. The pixel is firing — just more than once.')">Add the Pixel ID into the Campaign settings to connect it properly.</div>
+          <div class="quiz-opt" data-qid="q4" data-idx="0" onclick="answerQuiz('q4',0)">Increase the campaign budget to compensate for the potential under-reporting.</div>
+          <div class="quiz-opt" data-qid="q4" data-idx="1" onclick="answerQuiz('q4',1)">Pause the campaign immediately until it is resolved.</div>
+          <div class="quiz-opt" data-qid="q4" data-idx="2" onclick="answerQuiz('q4',2)">Flag it to the developer — the Pixel is installed twice, causing duplicate conversion counting.</div>
+          <div class="quiz-opt" data-qid="q4" data-idx="3" onclick="answerQuiz('q4',3)">Add the Pixel ID into the Campaign settings to connect it properly.</div>
         </div>
         <div class="quiz-feedback" id="q4-fb"></div>
+        <div id="q4-retry" style="display:none"><button class="btn btn-outline quiz-retry-btn" onclick="retryQuestion('q4')">Try Again</button></div>
       </div>
 
+      <!-- Q5 -->
       <div class="quiz-card" id="q5">
         <div class="quiz-q">5. Which of these is the correct Chrome DevTools Network tab filter to find TikTok Pixel requests?</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="answerQuiz('q5', this, false, 'That filter finds Meta Pixel requests, not TikTok.')">facebook.net</div>
-          <div class="quiz-opt" onclick="answerQuiz('q5', this, false, 'That filter finds GA4 requests.')">collect</div>
-          <div class="quiz-opt" onclick="answerQuiz('q5', this, true, 'Correct. TikTok Pixel sends requests to analytics.tiktok.com. Filtering for "tiktok" or "analytics.tiktok" will surface these hits.')">analytics.tiktok</div>
-          <div class="quiz-opt" onclick="answerQuiz('q5', this, false, 'That filter finds LINE Tag requests.')">insight.line.me</div>
+          <div class="quiz-opt" data-qid="q5" data-idx="0" onclick="answerQuiz('q5',0)">facebook.net</div>
+          <div class="quiz-opt" data-qid="q5" data-idx="1" onclick="answerQuiz('q5',1)">collect</div>
+          <div class="quiz-opt" data-qid="q5" data-idx="2" onclick="answerQuiz('q5',2)">analytics.tiktok</div>
+          <div class="quiz-opt" data-qid="q5" data-idx="3" onclick="answerQuiz('q5',3)">insight.line.me</div>
         </div>
         <div class="quiz-feedback" id="q5-fb"></div>
+        <div id="q5-retry" style="display:none"><button class="btn btn-outline quiz-retry-btn" onclick="retryQuestion('q5')">Try Again</button></div>
       </div>
 
+      <!-- Q6 -->
       <div class="quiz-card" id="q6">
         <div class="quiz-q">6. You are validating a LINE Tag but cannot find a dedicated browser extension for it. What is your best validation method?</div>
         <div class="quiz-options">
-          <div class="quiz-opt" onclick="answerQuiz('q6', this, false, 'That is Meta\'s test tool, not LINE\'s.')">Use Meta Events Manager Test Events.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q6', this, true, 'Correct. With no dedicated extension, the Chrome DevTools Network tab is the primary method. Filter by insight.line.me to see LINE Tag requests.')">Use Chrome DevTools Network tab, filtering for insight.line.me.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q6', this, false, 'Tag Assistant only works for Google tags (GA4, Google Ads, GTM). It does not detect LINE Tags.')">Use Google Tag Assistant — it detects all tracking pixels.</div>
-          <div class="quiz-opt" onclick="answerQuiz('q6', this, false, 'View page source shows hardcoded HTML but will not show tags injected dynamically by GTM.')">Right-click &#8594; View Page Source and search for LINE.</div>
+          <div class="quiz-opt" data-qid="q6" data-idx="0" onclick="answerQuiz('q6',0)">Use Meta Events Manager Test Events.</div>
+          <div class="quiz-opt" data-qid="q6" data-idx="1" onclick="answerQuiz('q6',1)">Use Chrome DevTools Network tab, filtering for insight.line.me.</div>
+          <div class="quiz-opt" data-qid="q6" data-idx="2" onclick="answerQuiz('q6',2)">Use Google Tag Assistant — it detects all tracking pixels.</div>
+          <div class="quiz-opt" data-qid="q6" data-idx="3" onclick="answerQuiz('q6',3)">Right-click &#8594; View Page Source and search for LINE.</div>
         </div>
         <div class="quiz-feedback" id="q6-fb"></div>
+        <div id="q6-retry" style="display:none"><button class="btn btn-outline quiz-retry-btn" onclick="retryQuestion('q6')">Try Again</button></div>
       </div>
 
       <div class="quiz-score" id="quiz-score"></div>
 
       <div class="nav-btns">
         <button class="btn btn-outline" onclick="goTo('s6')">&#8592; Back to Checklist</button>
-        <button class="btn btn-primary" onclick="goTo('s0')">Start Over</button>
+        <button class="btn btn-primary" id="quiz-retake-btn" onclick="resetQuiz()" style="display:none">Retake Quiz</button>
+        <button class="btn btn-primary" id="quiz-finish-btn" onclick="goTo('s0')">Start Over</button>
       </div>
     </div>
 
@@ -1456,35 +1510,166 @@ Examples:
   }
 
   // ── Quiz ────────────────────────────────────────────────────
-  let answeredCount = 0;
-  const totalQuestions = 6;
+  const QUIZ_IDS = ['q1','q2','q3','q4','q5','q6'];
 
-  function answerQuiz(questionId, selectedEl, isCorrect, explanation) {
-    const card = document.getElementById(questionId);
-    if (card.dataset.answered) return;
-    card.dataset.answered = '1';
+  // All feedback stored in JS — no inline string escaping issues
+  const QUIZ = {
+    q1: {
+      correct: 1,
+      feedback: [
+        'Campaign bidding is irrelevant if the conversion tag has never confirmed firing.',
+        'Correct. The conversion tag is not installed on the confirmation page, not firing, or firing on the wrong page. Always validate the conversion tag first.',
+        'Audience targeting affects who sees the ads, not whether conversions are tracked.',
+        'Ad creative does not affect whether a conversion tag records completed purchases.'
+      ]
+    },
+    q2: {
+      correct: 2,
+      feedback: [
+        "Meta's servers being down would affect global campaigns. A missing tag is far more likely.",
+        'HTTPS has no bearing on whether a pixel loads or not.',
+        'Correct. If the Meta Pixel base code is not on the page, fbevents.js never loads and no facebook.net requests will appear.',
+        'GA4 sends requests to google-analytics.com, not facebook.net.'
+      ]
+    },
+    q3: {
+      correct: 1,
+      feedback: [
+        'Saving only stores a draft in GTM. The live website is unchanged until you publish.',
+        'Correct. In GTM you must go through Preview (to test) and then Submit + Publish to push changes to the live website.',
+        'The developer does not need to re-install anything. GTM handles deployment once published.',
+        'Preview mode lets you test but does not make the tag live for real visitors.'
+      ]
+    },
+    q4: {
+      correct: 2,
+      feedback: [
+        'Increasing budget does not fix double-counting — it makes the inflated reporting worse.',
+        'This is a tracking issue, not a campaign delivery issue. The campaign can keep running.',
+        'Correct. Multiple activations mean the Pixel base code is firing more than once per page load, causing duplicate conversions. Flag it to the developer.',
+        'Multiple activations indicate duplicate code, not a missing Pixel ID. The pixel is firing — just more than once.'
+      ]
+    },
+    q5: {
+      correct: 2,
+      feedback: [
+        'That filter finds Meta Pixel requests (connect.facebook.net), not TikTok.',
+        'That filter finds GA4 requests to google-analytics.com.',
+        'Correct. TikTok Pixel sends requests to analytics.tiktok.com. Filtering by "analytics.tiktok" surfaces these hits.',
+        'That filter finds LINE Tag requests to insight.line.me.'
+      ]
+    },
+    q6: {
+      correct: 1,
+      feedback: [
+        "That is Meta's test tool, not LINE's.",
+        'Correct. With no dedicated extension, the Chrome DevTools Network tab is the primary method. Filter by insight.line.me to see LINE Tag requests.',
+        'Tag Assistant only works for Google tags (GA4, Google Ads, GTM). It does not detect LINE Tags.',
+        'View page source shows hardcoded HTML but will not show tags injected dynamically by GTM.'
+      ]
+    }
+  };
+
+  // Per-question state: null | 'done-first' | 'done-retry'
+  const quizState = {};
+
+  function answerQuiz(qid, idx) {
+    const card = document.getElementById(qid);
+    if (card.dataset.done) return; // already completed
+
+    const data    = QUIZ[qid];
+    const correct = (idx === data.correct);
+    const first   = !card.dataset.attempted;
+    card.dataset.attempted = '1';
 
     const opts = card.querySelectorAll('.quiz-opt');
     opts.forEach(o => o.classList.add('locked'));
-    selectedEl.classList.add(isCorrect ? 'correct' : 'wrong');
+    opts[idx].classList.add(correct ? 'correct' : 'wrong');
 
-    const fb = document.getElementById(questionId + '-fb');
-    fb.textContent = explanation;
-    fb.classList.add('show', isCorrect ? 'ok' : 'bad');
+    const fb = document.getElementById(qid + '-fb');
+    fb.textContent = data.feedback[idx];
+    fb.classList.remove('show','ok','bad');
+    // Force reflow so animation replays on retry
+    void fb.offsetWidth;
+    fb.classList.add('show', correct ? 'ok' : 'bad');
 
-    if (isCorrect) answeredCount++;
-
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
-    if (answered === totalQuestions) {
-      const scoreEl = document.getElementById('quiz-score');
-      const pct = Math.round((answeredCount / totalQuestions) * 100);
-      let msg = '';
-      if (pct === 100) msg = 'Perfect score. You are ready to validate any tag independently.';
-      else if (pct >= 67) msg = 'Good result. Review the sections for any questions you missed.';
-      else msg = 'Keep going. Re-read the relevant sections and try again.';
-      scoreEl.innerHTML = 'Score: ' + answeredCount + ' / ' + totalQuestions + ' (' + pct + '%)<br><span style="font-size:0.9rem;font-weight:400;color:var(--gray)">' + msg + '</span>';
-      scoreEl.style.display = 'block';
+    if (correct) {
+      card.dataset.done = '1';
+      quizState[qid] = first ? 'first' : 'retry';
+      updateQuizPips();
+      if (Object.keys(quizState).length === QUIZ_IDS.length) showQuizScore();
+    } else {
+      document.getElementById(qid + '-retry').style.display = 'block';
     }
+  }
+
+  function retryQuestion(qid) {
+    const card = document.getElementById(qid);
+    if (card.dataset.done) return;
+
+    const opts = card.querySelectorAll('.quiz-opt');
+    opts.forEach(o => {
+      o.classList.remove('correct','wrong','locked');
+    });
+
+    const fb = document.getElementById(qid + '-fb');
+    fb.textContent = '';
+    fb.classList.remove('show','ok','bad');
+    document.getElementById(qid + '-retry').style.display = 'none';
+  }
+
+  function updateQuizPips() {
+    const done = Object.keys(quizState).length;
+    QUIZ_IDS.forEach((qid, i) => {
+      const pip = document.getElementById('pip-' + qid);
+      if (quizState[qid]) pip.classList.add('done');
+    });
+    const label = document.getElementById('quiz-progress-label');
+    if (label) label.textContent = done + ' / ' + QUIZ_IDS.length + ' answered';
+  }
+
+  function showQuizScore() {
+    const firstCount = Object.values(quizState).filter(v => v === 'first').length;
+    const total = QUIZ_IDS.length;
+    let msg = '';
+    if (firstCount === total) msg = 'Perfect first-attempt score. You are ready to validate tags independently.';
+    else if (firstCount >= 4)  msg = 'Good result. Review the sections covering the questions you needed to retry.';
+    else                       msg = 'Keep practicing. Re-read the relevant sections and use the Retake button below.';
+
+    const scoreEl = document.getElementById('quiz-score');
+    scoreEl.innerHTML =
+      'Score: <strong>' + firstCount + ' / ' + total + '</strong> correct on first attempt' +
+      '<br><span style="font-size:0.88rem;font-weight:400;color:var(--gray);margin-top:0.3rem;display:block">' + msg + '</span>';
+    scoreEl.style.display = 'block';
+    document.getElementById('quiz-retake-btn').style.display = 'inline-block';
+    document.getElementById('quiz-finish-btn').style.display = 'none';
+  }
+
+  function resetQuiz() {
+    // Clear state
+    QUIZ_IDS.forEach(qid => delete quizState[qid]);
+
+    QUIZ_IDS.forEach(qid => {
+      const card = document.getElementById(qid);
+      delete card.dataset.done;
+      delete card.dataset.attempted;
+
+      card.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('correct','wrong','locked'));
+
+      const fb = document.getElementById(qid + '-fb');
+      fb.textContent = '';
+      fb.classList.remove('show','ok','bad');
+
+      document.getElementById(qid + '-retry').style.display = 'none';
+      const pip = document.getElementById('pip-' + qid);
+      if (pip) pip.classList.remove('done');
+    });
+
+    document.getElementById('quiz-progress-label').textContent = '0 / 6 answered';
+    document.getElementById('quiz-score').style.display = 'none';
+    document.getElementById('quiz-retake-btn').style.display = 'none';
+    document.getElementById('quiz-finish-btn').style.display = 'inline-block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // ── Copy code ───────────────────────────────────────────────
