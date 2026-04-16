@@ -594,25 +594,172 @@
       </div>
 
       <h2>What a Tag Looks Like</h2>
-      <p>Here is what a Meta Pixel base tag looks like in raw HTML. The client's developer (or GTM) places this in the <code>&lt;head&gt;</code> of each page.</p>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-<span class="hl-cmt">&lt;!-- Meta Pixel Code --&gt;</span>
-<span class="hl-tag">&lt;script&gt;</span>
-  !<span class="hl-fn">function</span>(f,b,e,v,n,t,s) {
-    <span class="hl-kw">if</span>(f.fbq)<span class="hl-kw">return</span>; n=f.fbq=<span class="hl-fn">function</span>(){...};
-    ...
-    fbq(<span class="hl-str">'init'</span>, <span class="hl-str">'1234567890'</span>);  <span class="hl-cmt">// ← your Pixel ID</span>
-    fbq(<span class="hl-str">'track'</span>, <span class="hl-str">'PageView'</span>);
-  }(window, ...);
-<span class="hl-tag">&lt;/script&gt;</span>
-<span class="hl-tag">&lt;noscript&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-str">height="1" width="1"</span>
-  src=<span class="hl-str">"https://www.facebook.com/tr?id=1234567890&amp;ev=PageView"</span><span class="hl-tag">/&gt;&lt;/noscript&gt;</span>
+      <p>Tags come in different forms depending on the platform and purpose. Select any example below — these are the actual code snippets that go on a website.</p>
+
+      <div class="tabs" id="code-tabs">
+        <button class="tab-btn meta active" onclick="switchTab('code','meta')">Meta Pixel</button>
+        <button class="tab-btn ga4"         onclick="switchTab('code','ga4')">GA4 Base</button>
+        <button class="tab-btn remarketing" onclick="switchTab('code','remarketing')">Remarketing</button>
+        <button class="tab-btn conv-event"  onclick="switchTab('code','conv-event')">Conversion Event</button>
+        <button class="tab-btn floodlight"  onclick="switchTab('code','floodlight')">Floodlight</button>
+        <button class="tab-btn ias"         onclick="switchTab('code','ias')">IAS</button>
       </div>
 
-      <div class="callout info">
+      <!-- Meta Pixel Base -->
+      <div class="tab-panel active" id="code-meta">
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.75rem"><span class="badge meta">Meta</span> <strong>Base Code</strong> — fires on every page. Initialises the Pixel library and tracks page views. Place in <code>&lt;head&gt;</code> site-wide via GTM.</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">&lt;!-- Meta Pixel Base Code --&gt;</span>
+<span class="hl-tag">&lt;script&gt;</span>
+  !<span class="hl-fn">function</span>(f,b,e,v,n,t,s){
+    <span class="hl-kw">if</span>(f.fbq)<span class="hl-kw">return</span>; n=f.fbq=<span class="hl-fn">function</span>(){...};
+    ...
+    fbq(<span class="hl-str">'init'</span>, <span class="hl-str">'1234567890'</span>);   <span class="hl-cmt">// ← Pixel ID from Events Manager</span>
+    fbq(<span class="hl-str">'track'</span>, <span class="hl-str">'PageView'</span>);         <span class="hl-cmt">// ← fires PageView on every load</span>
+  }(window,...);
+<span class="hl-tag">&lt;/script&gt;</span>
+<span class="hl-tag">&lt;noscript&gt;&lt;img</span> height=<span class="hl-str">"1"</span> width=<span class="hl-str">"1"</span>
+  src=<span class="hl-str">"https://www.facebook.com/tr?id=1234567890&amp;ev=PageView"</span>
+<span class="hl-tag">/&gt;&lt;/noscript&gt;</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--gray)">Validate: Network tab filter <code>facebook.net</code> — look for <code>connect.facebook.net/en_US/fbevents.js</code> loading.</p>
+      </div>
+
+      <!-- GA4 Base -->
+      <div class="tab-panel" id="code-ga4">
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.75rem"><span class="badge ga4">GA4</span> <strong>Configuration Tag</strong> — loads the gtag.js library and initialises your GA4 property. In GTM, use the built-in "Google Analytics: GA4 Configuration" tag type.</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">&lt;!-- GA4 Configuration Tag --&gt;</span>
+<span class="hl-tag">&lt;script</span> async src=<span class="hl-str">"https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
+<span class="hl-tag">&lt;script&gt;</span>
+  window.dataLayer = window.dataLayer || [];
+  <span class="hl-fn">function</span> <span class="hl-fn">gtag</span>(){ dataLayer.<span class="hl-fn">push</span>(arguments); }
+  <span class="hl-fn">gtag</span>(<span class="hl-str">'js'</span>, <span class="hl-kw">new</span> Date());
+  <span class="hl-fn">gtag</span>(<span class="hl-str">'config'</span>, <span class="hl-str">'G-XXXXXXXXXX'</span>);  <span class="hl-cmt">// ← Measurement ID from GA4 Admin</span>
+<span class="hl-tag">&lt;/script&gt;</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--gray)">Validate: Network tab filter <code>collect</code> — look for <code>google-analytics.com/g/collect?...tid=G-XXXXXXXXXX</code>, status 204.</p>
+      </div>
+
+      <!-- Google Ads Remarketing -->
+      <div class="tab-panel" id="code-remarketing">
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.75rem"><span class="badge google">Google Ads</span> <strong>Remarketing Tag</strong> — fires on all pages to add visitors to Google Ads audience lists. In GTM, use the "Google Ads Remarketing" tag type. Needs an All Pages trigger.</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">&lt;!-- Google Ads Remarketing Tag --&gt;</span>
+<span class="hl-tag">&lt;script</span> async src=<span class="hl-str">"https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXX"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
+<span class="hl-tag">&lt;script&gt;</span>
+  window.dataLayer = window.dataLayer || [];
+  <span class="hl-fn">function</span> <span class="hl-fn">gtag</span>(){ dataLayer.<span class="hl-fn">push</span>(arguments); }
+  <span class="hl-fn">gtag</span>(<span class="hl-str">'js'</span>, <span class="hl-kw">new</span> Date());
+
+  <span class="hl-fn">gtag</span>(<span class="hl-str">'config'</span>, <span class="hl-str">'AW-XXXXXXXXX'</span>);  <span class="hl-cmt">// ← Google Ads account ID (Conversion ID)</span>
+
+  <span class="hl-cmt">// Optional: pass page-level signals for Dynamic Remarketing</span>
+  <span class="hl-fn">gtag</span>(<span class="hl-str">'event'</span>, <span class="hl-str">'page_view'</span>, {
+    <span class="hl-str">'send_to'</span>:    <span class="hl-str">'AW-XXXXXXXXX'</span>,
+    <span class="hl-str">'ecomm_pagetype'</span>: <span class="hl-str">'product'</span>,       <span class="hl-cmt">// home | searchresults | category | product | cart | purchase | other</span>
+    <span class="hl-str">'ecomm_prodid'</span>:   <span class="hl-str">'SKU_001'</span>,
+    <span class="hl-str">'ecomm_totalvalue'</span>: <span class="hl-num">1500</span>
+  });
+<span class="hl-tag">&lt;/script&gt;</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--gray)">Validate: Network tab filter <code>googleadservices</code> or <code>google.com/pagead/viewthroughconversion</code>.</p>
+      </div>
+
+      <!-- Conversion Event -->
+      <div class="tab-panel" id="code-conv-event">
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.75rem"><span class="badge ga4">GA4</span> <strong>Event Tag — fires only on the conversion page</strong> (e.g., thank-you/order-confirmation). Sends the purchase event with order details. In GTM, use "Google Analytics: GA4 Event" tag type with a Page URL trigger.</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">// GA4 Purchase Event — fires on /order-confirmation page only</span>
+<span class="hl-fn">gtag</span>(<span class="hl-str">'event'</span>, <span class="hl-str">'purchase'</span>, {
+  <span class="hl-str">transaction_id</span>: <span class="hl-str">'T_67890'</span>,       <span class="hl-cmt">// ← unique order ID — prevents duplicate counting</span>
+  <span class="hl-str">value</span>:          <span class="hl-num">2500.00</span>,           <span class="hl-cmt">// ← order total</span>
+  <span class="hl-str">currency</span>:       <span class="hl-str">'THB'</span>,
+  <span class="hl-str">coupon</span>:         <span class="hl-str">'PROMO10'</span>,          <span class="hl-cmt">// ← optional</span>
+  <span class="hl-str">items</span>: [{
+    <span class="hl-str">item_id</span>:    <span class="hl-str">'SKU_001'</span>,
+    <span class="hl-str">item_name</span>:  <span class="hl-str">'Product Name'</span>,
+    <span class="hl-str">item_brand</span>: <span class="hl-str">'Brand'</span>,
+    <span class="hl-str">quantity</span>:   <span class="hl-num">1</span>,
+    <span class="hl-str">price</span>:      <span class="hl-num">2500.00</span>
+  }]
+});
+
+<span class="hl-cmt">// Google Ads Conversion — fires alongside GA4 on same page</span>
+<span class="hl-fn">gtag</span>(<span class="hl-str">'event'</span>, <span class="hl-str">'conversion'</span>, {
+  <span class="hl-str">'send_to'</span>:        <span class="hl-str">'AW-XXXXXXXXX/CONVERSION_LABEL'</span>,  <span class="hl-cmt">// ← from Google Ads Conversions</span>
+  <span class="hl-str">'value'</span>:          <span class="hl-num">2500.00</span>,
+  <span class="hl-str">'currency'</span>:       <span class="hl-str">'THB'</span>,
+  <span class="hl-str">'transaction_id'</span>: <span class="hl-str">'T_67890'</span>
+});
+        </div>
+        <p style="font-size:0.82rem;color:var(--gray)">Validate: GA4 DebugView or Network tab filter <code>collect</code> — check <code>en=purchase</code> in the payload.</p>
+      </div>
+
+      <!-- Floodlight -->
+      <div class="tab-panel" id="code-floodlight">
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.75rem"><span class="badge gtm">CM360</span> <strong>Floodlight Tag</strong> — Campaign Manager 360's conversion tracking format. Used when the client runs display/video campaigns through CM360 or DV360. In GTM, use the built-in "Floodlight Sales" or "Floodlight Counter" tag type.</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">// Floodlight Sales Activity — fires on purchase/conversion page</span>
+<span class="hl-cmt">// In GTM: Tag type = "Floodlight Sales" — no custom HTML needed</span>
+<span class="hl-fn">gtag</span>(<span class="hl-str">'event'</span>, <span class="hl-str">'conversion'</span>, {
+  <span class="hl-str">'allow_custom_scripts'</span>: <span class="hl-kw">true</span>,
+  <span class="hl-str">'send_to'</span>:  <span class="hl-str">'DC-XXXXXXXX/FLOODLIGHT_GROUP/ACTIVITY_TAG+standard'</span>,
+                          <span class="hl-cmt">// ↑ DC-[Advertiser ID] / [Group Tag] / [Activity Tag]</span>
+  <span class="hl-str">'value'</span>:    ORDER_VALUE,      <span class="hl-cmt">// ← dynamic variable</span>
+  <span class="hl-str">'transaction_id'</span>: ORDER_ID
+});
+
+<span class="hl-cmt">&lt;!-- Fallback image pixel (for no-JS environments) --&gt;</span>
+<span class="hl-tag">&lt;noscript&gt;</span>
+<span class="hl-tag">&lt;img</span> src=<span class="hl-str">"https://ad.doubleclick.net/ddm/activity/src=XXXXXXXX;</span>
+<span class="hl-str">  type=FLOODLIGHT_GROUP;cat=ACTIVITY_TAG;qty=1;cost=ORDER_VALUE;</span>
+<span class="hl-str">  dc_lat=;dc_rdid=;ord=ORDER_ID?"</span>
+  width=<span class="hl-str">"1"</span> height=<span class="hl-str">"1"</span> alt=<span class="hl-str">""</span><span class="hl-tag">/&gt;</span>
+<span class="hl-tag">&lt;/noscript&gt;</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--gray)">Validate: Network tab filter <code>doubleclick.net</code> or <code>fls.doubleclick.net</code> — look for requests to <code>ad.doubleclick.net/ddm/activity</code>, status 200.</p>
+      </div>
+
+      <!-- IAS -->
+      <div class="tab-panel" id="code-ias">
+        <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.75rem"><span class="badge" style="background:#F0F0F0;color:#333">IAS</span> <strong>IAS Tags</strong> — Integral Ad Science tags measure viewability, brand safety, and invalid traffic. Two types: the <strong>Direct Measurement Tag</strong> goes inside ad creatives; the <strong>Publisher Optimization Tag</strong> goes on the page itself.</p>
+        <div class="code-block">
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">/* ─── Type 1: Direct Measurement Tag ───────────────────────</span>
+<span class="hl-cmt">   Embedded inside the ad creative HTML by the trafficker.</span>
+<span class="hl-cmt">   Measures viewability and brand safety of a specific placement. */</span>
+<span class="hl-tag">&lt;script</span> src=<span class="hl-str">"https://pixel.adsafeprotected.com/jload?</span>
+<span class="hl-str">  anId=XXXXXXXX&amp;      </span><span class="hl-cmt">// ← IAS Campaign/Advertiser ID</span>
+<span class="hl-str">  pubId=XXXXXXXX&amp;     </span><span class="hl-cmt">// ← Publisher ID</span>
+<span class="hl-str">  chanId=XXXXXXXX&amp;    </span><span class="hl-cmt">// ← Channel/Placement ID</span>
+<span class="hl-str">  placementId=XXXXXXXX"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
+<span class="hl-tag">&lt;noscript&gt;&lt;img</span> src=<span class="hl-str">"https://pixel.adsafeprotected.com/iload?anId=XXXXXXXX&amp;pubId=XXXXXXXX"</span>
+  width=<span class="hl-str">"1"</span> height=<span class="hl-str">"1"</span> alt=<span class="hl-str">""</span><span class="hl-tag">&gt;&lt;/noscript&gt;</span>
+
+<span class="hl-cmt">/* ─── Type 2: Publisher Optimization Tag ───────────────────
+   Placed on the website via GTM (All Pages trigger).
+   Enables pre-bid brand safety targeting signals for DV360/GAM. */</span>
+<span class="hl-tag">&lt;script</span> async src=<span class="hl-str">"https://cdn.adsafeprotected.com/iasPET.1.js"</span><span class="hl-tag">&gt;&lt;/script&gt;</span>
+<span class="hl-tag">&lt;script&gt;</span>
+  <span class="hl-kw">var</span> _iasPET = _iasPET || {};
+  _iasPET.queue = _iasPET.queue || [];
+  _iasPET.settings = {
+    <span class="hl-str">'pubId'</span>: <span class="hl-str">'XXXXXXXX'</span>  <span class="hl-cmt">// ← IAS Publisher ID — provided by your IAS account manager</span>
+  };
+<span class="hl-tag">&lt;/script&gt;</span>
+        </div>
+        <p style="font-size:0.82rem;color:var(--gray)">Validate: Network tab filter <code>adsafeprotected.com</code> — look for requests to <code>pixel.adsafeprotected.com</code> (direct measurement) or <code>cdn.adsafeprotected.com/iasPET.1.js</code> loading.</p>
+      </div>
+
+      <div class="callout info" style="margin-top:1.25rem">
         <span class="callout-icon">&#8505;</span>
-        <p>Every tag has a unique ID — the Pixel ID, Conversion ID, or Property ID. This is what links the tag back to <em>your</em> account. Always verify the ID matches your platform account.</p>
+        <p>Every tag has a unique ID — the Pixel ID, Conversion ID, Measurement ID, or Publisher ID. This is what links the tag to <em>your</em> account. Always verify the ID in the code matches what you see in the platform before signing off on an implementation.</p>
       </div>
 
       <h2>Tag vs. Event</h2>
@@ -1067,6 +1214,79 @@
           <div id="wt4"></div>
         </div>
         <div class="wz-body" id="wz-body"></div>
+      </div>
+
+      <h2>Universal Debugger Extensions</h2>
+      <p style="color:var(--gray);font-size:0.88rem;margin-bottom:1rem">These extensions work across multiple platforms at once — useful when you need to audit several tags on the same page without switching tools.</p>
+
+      <div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));margin-bottom:0.5rem">
+        <div class="card">
+          <div class="card-title" style="font-size:0.95rem;margin-bottom:0.35rem">Omnibug</div>
+          <div class="card-desc" style="font-size:0.82rem;margin-bottom:0.6rem">Intercepts and decodes calls from 150+ platforms in one panel — GA4, Google Ads, Meta, Adobe Analytics, Salesforce, CM360, and more. Shows every tag call with its parameters in plain English. Best all-round auditing tool.</div>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <span class="chip" style="border-color:var(--google);color:var(--google)">Multi-platform</span>
+            <span class="chip" style="border-color:var(--ok);color:var(--ok)">Free</span>
+          </div>
+          <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--gray)">Chrome Web Store: search <strong>Omnibug</strong></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="font-size:0.95rem;margin-bottom:0.35rem">Analytics Debugger</div>
+          <div class="card-desc" style="font-size:0.82rem;margin-bottom:0.6rem">Real-time sidebar panel showing GA4 events, dataLayer pushes, ecommerce data, and user properties as they fire. Easier to read than GA4 DebugView for quick checks. Also supports Universal Analytics legacy tags and GTM debugging.</div>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <span class="chip" style="border-color:var(--gtm);color:var(--gtm)">GA4 / GTM</span>
+            <span class="chip" style="border-color:var(--ok);color:var(--ok)">Free</span>
+          </div>
+          <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--gray)">Chrome Web Store: search <strong>Analytics Debugger</strong> by Markus Baersch</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="font-size:0.95rem;margin-bottom:0.35rem">DataLayer Inspector+</div>
+          <div class="card-desc" style="font-size:0.82rem;margin-bottom:0.6rem">Shows the full dataLayer in real-time as it updates — each push is displayed as it happens. Useful when checking whether the website is passing variables (order value, product ID, user type) to GTM correctly before tags pick them up.</div>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <span class="chip" style="border-color:var(--gtm);color:var(--gtm)">GTM / dataLayer</span>
+            <span class="chip" style="border-color:var(--ok);color:var(--ok)">Free</span>
+          </div>
+          <div style="margin-top:0.75rem;font-size:0.78rem;color:var(--gray)">Chrome Web Store: search <strong>DataLayer Inspector</strong></div>
+        </div>
+      </div>
+
+      <div class="table-wrap" style="margin-bottom:1.75rem">
+        <table>
+          <thead><tr><th>Extension</th><th>Best For</th><th>Platforms Covered</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Omnibug</strong></td>
+              <td>Auditing many tags at once, cross-platform tag inventory</td>
+              <td>GA4, Google Ads, Meta, Adobe, CM360, Floodlight, Salesforce, 150+</td>
+            </tr>
+            <tr>
+              <td><strong>Analytics Debugger</strong></td>
+              <td>GA4 event debugging, ecommerce parameter checks</td>
+              <td>GA4, GTM dataLayer, some Adobe Analytics</td>
+            </tr>
+            <tr>
+              <td><strong>Tag Assistant Companion</strong></td>
+              <td>Google-only tags — GA4, Google Ads, GTM</td>
+              <td>GA4, Google Ads, GTM, Google Optimize</td>
+            </tr>
+            <tr>
+              <td><strong>Meta Pixel Helper</strong></td>
+              <td>Meta Pixel status, duplicate pixel detection</td>
+              <td>Meta Pixel only</td>
+            </tr>
+            <tr>
+              <td><strong>TikTok Pixel Helper</strong></td>
+              <td>TikTok Pixel status and event name verification</td>
+              <td>TikTok Pixel only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">&#10003;</span>
+        <p><strong>Pro tip:</strong> Install Omnibug + one platform-specific extension (Meta Pixel Helper or TikTok Pixel Helper). Omnibug gives you the broad view across all tags; the platform extension gives you the deeper detail for that specific pixel. Both run simultaneously.</p>
       </div>
 
       <h2>Detailed Validation by Platform</h2>
