@@ -359,11 +359,81 @@
     .quiz-pip.done    { background: var(--ok); border-color: var(--ok); }
     .quiz-pip.current { border-color: var(--navy); background: transparent; }
 
+    /* ── Wizard ── */
+    .wizard { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 1.25rem 0 2rem; }
+    .wizard-hdr { background: var(--navy); padding: 1rem 1.5rem 0.75rem; }
+    .wizard-hdr-label { color: var(--teal); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+    .wizard-hdr-title { color: #fff; font-size: 1.05rem; font-weight: 700; margin-top: 0.2rem; }
+    .wz-track { display: flex; gap: 3px; background: var(--navy); padding: 0 1.5rem 0.9rem; }
+    .wz-track div { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.18); transition: background 0.3s; }
+    .wz-track .wt-done   { background: var(--green); }
+    .wz-track .wt-active { background: var(--teal); }
+    .wz-body { padding: 1.5rem; min-height: 180px; }
+    .platform-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.75rem; margin-bottom: 0.25rem; }
+    .mc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .pc, .mc {
+      border: 2px solid var(--border); border-radius: 10px; padding: 1rem 0.75rem;
+      cursor: pointer; transition: all 0.15s; background: #fff;
+    }
+    .pc { text-align: center; }
+    .pc:hover, .mc:hover { border-color: var(--navy); background: #F8FAFF; transform: translateY(-2px); }
+    .pc.sel  { border-color: var(--green); background: #F0FFEC; }
+    .mc.sel  { border-color: var(--teal);  background: #F0FCFF; }
+    .pc-icon { margin-bottom: 0.4rem; }
+    .pc-name { font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+    .mc-title { font-weight: 700; font-size: 0.88rem; color: var(--navy); margin-bottom: 0.3rem; }
+    .mc-desc  { font-size: 0.78rem; color: var(--gray); }
+    .wz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .wz-back { background: none; border: none; color: var(--gray); cursor: pointer; font-size: 0.85rem; padding: 0.4rem 0.75rem; border-radius: 6px; }
+    .wz-back:hover { background: var(--light); color: var(--navy); }
+    .wz-outcome { text-align: center; padding: 0.25rem 0 0.75rem; }
+    .outcome-circle {
+      width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 0.75rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700;
+    }
+    .outcome-circle.ok   { background: #EFFFED; color: var(--ok); }
+    .outcome-circle.fail { background: #FFF0EE; color: var(--error); }
+    .outcome-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .outcome-desc  { font-size: 0.87rem; color: var(--gray); max-width: 380px; margin: 0 auto 0.75rem; line-height: 1.5; }
+    .wz-steps { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+    .wz-steps li {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 0.65rem 0.9rem; background: #F8FAFF; border: 1px solid var(--border);
+      border-radius: 8px; margin-bottom: 0.4rem; font-size: 0.87rem; color: #2d3a52;
+    }
+    .wz-num {
+      width: 22px; height: 22px; border-radius: 50%; background: var(--navy);
+      color: var(--green); font-size: 0.72rem; font-weight: 800; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; margin-top: 1px;
+    }
+    .filter-chip {
+      display: inline-block; background: #0D1117; color: #7EE787;
+      font-family: 'Consolas', monospace; font-size: 0.82em;
+      padding: 0.1em 0.5em; border-radius: 4px;
+    }
+    /* ── PDPA consent ── */
+    .consent-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1rem 0; }
+    .consent-card {
+      flex: 1; min-width: 140px; border-radius: 10px; padding: 0.9rem 1rem;
+      border: 2px solid;
+    }
+    .consent-card.yes  { border-color: var(--error); background: #FFF0EE; }
+    .consent-card.no   { border-color: var(--ok);    background: #EFFFED; }
+    .consent-card.rec  { border-color: var(--warn);  background: #FFF8ED; }
+    .consent-card-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem; }
+    .consent-card.yes  .consent-card-label { color: var(--error); }
+    .consent-card.no   .consent-card-label { color: var(--ok);    }
+    .consent-card.rec  .consent-card-label { color: var(--warn);  }
+    .consent-card-title { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; }
+    .consent-card-desc  { font-size: 0.78rem; color: var(--gray); }
+
     @media (max-width: 768px) {
       .sidebar { width: 0; display: none; }
       .main { padding: 1.5rem 1rem 3rem; }
       .gtm-cols { grid-template-columns: 1fr; }
       .flow-row { flex-wrap: wrap; justify-content: flex-start; }
+      .platform-grid { grid-template-columns: repeat(2,1fr); }
+      .mc-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -405,23 +475,26 @@
       <a class="nav-item" data-section="s3" onclick="goTo('s3')">
         <span class="nav-num">3</span>How Tags Fire
       </a>
+      <a class="nav-item" data-section="spdpa" onclick="goTo('spdpa')">
+        <span class="nav-num">4</span>PDPA &amp; Cookies
+      </a>
       <a class="nav-item" data-section="s4" onclick="goTo('s4')">
-        <span class="nav-num">4</span>Validate by Platform
+        <span class="nav-num">5</span>Validate by Platform
       </a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Implementation</div>
       <a class="nav-item" data-section="s5" onclick="goTo('s5')">
-        <span class="nav-num">5</span>GTM Walkthrough
+        <span class="nav-num">6</span>GTM Walkthrough
       </a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Practice</div>
       <a class="nav-item" data-section="s6" onclick="goTo('s6')">
-        <span class="nav-num">6</span>Validation Checklist
+        <span class="nav-num">7</span>Validation Checklist
       </a>
       <a class="nav-item" data-section="s7" onclick="goTo('s7')">
-        <span class="nav-num">7</span>Knowledge Check
+        <span class="nav-num">8</span>Knowledge Check
       </a>
     </div>
   </nav>
@@ -867,6 +940,110 @@
 
       <div class="nav-btns">
         <button class="btn btn-outline" onclick="goTo('s2')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('spdpa')">PDPA &amp; Cookies &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ SPDPA: Cookie Consent & PDPA -->
+    <div class="section" id="spdpa">
+      <h1>Cookie Consent &amp; PDPA</h1>
+      <p class="lead">Marketing tags collect personal data. Under Thailand's Personal Data Protection Act (PDPA), visitors must give informed consent before that data is collected. This section explains what compliance means for your tags.</p>
+
+      <h2>What PDPA Means for Tracking</h2>
+      <p>The <strong>Personal Data Protection Act B.E. 2562</strong> (PDPA) has been fully enforceable in Thailand since June 2022. It requires organisations to obtain clear, informed consent before collecting, using, or processing personal data — which includes IP addresses, browsing behaviour, device identifiers, and any data marketing pixels collect.</p>
+      <p>In practice: <strong>a visitor who declines the cookie banner must not have their data sent to ad platforms.</strong> A Meta Pixel or Google Ads tag firing regardless of consent is a PDPA violation.</p>
+      <div class="callout warn">
+        <span class="callout-icon">&#9888;</span>
+        <p>This is the client's legal responsibility — but as the agency managing the tags, you share accountability if tags fire without consent. Always confirm a consent mechanism is live before launching marketing tags.</p>
+      </div>
+
+      <h2>Which Tags Need Consent?</h2>
+      <div class="consent-row">
+        <div class="consent-card no">
+          <div class="consent-card-label">No consent required</div>
+          <div class="consent-card-title">Strictly Necessary</div>
+          <div class="consent-card-desc">Login sessions, shopping cart, security cookies. Essential for the site to function.</div>
+        </div>
+        <div class="consent-card rec">
+          <div class="consent-card-label">Recommended</div>
+          <div class="consent-card-title">Functional / Preference</div>
+          <div class="consent-card-desc">Language settings, remember-me, user preferences. Low risk but best practice to ask.</div>
+        </div>
+        <div class="consent-card yes">
+          <div class="consent-card-label">Consent required</div>
+          <div class="consent-card-title">Analytics</div>
+          <div class="consent-card-desc">GA4, Hotjar, Microsoft Clarity. Collects browsing behaviour and session data.</div>
+        </div>
+        <div class="consent-card yes">
+          <div class="consent-card-label">Consent required</div>
+          <div class="consent-card-title">Marketing / Targeting</div>
+          <div class="consent-card-desc">Google Ads, Meta Pixel, TikTok Pixel, LINE Tag, CM360. Collects data for ad targeting and attribution.</div>
+        </div>
+      </div>
+
+      <h2>Google Consent Mode v2</h2>
+      <p>Since March 2024, Google requires all advertisers using audiences or conversion measurement to implement <strong>Consent Mode v2</strong> — four consent signals your website sends to Google's tags.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Signal</th><th>Controls</th><th>If Denied</th></tr></thead>
+          <tbody>
+            <tr><td><code>ad_storage</code></td><td>Google Ads cookies for attribution and remarketing</td><td>No cookies set; limited ping sent for modelling</td></tr>
+            <tr><td><code>analytics_storage</code></td><td>GA4 cookies for sessions and user tracking</td><td>Cookieless hit only; no cross-session identity</td></tr>
+            <tr><td><code>ad_user_data</code></td><td>Sending hashed user data (email, phone) to Google</td><td>Enhanced conversions disabled</td></tr>
+            <tr><td><code>ad_personalization</code></td><td>Personalised advertising and remarketing features</td><td>Remarketing lists do not populate</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="callout-icon">&#8505;</span>
+        <p>When consent is denied, Google's tags still fire a limited, cookieless ping. Google uses this signal for <strong>conversion modelling</strong> — it estimates conversions that cannot be directly measured. This is why Consent Mode v2 is preferable to blocking the tag entirely.</p>
+      </div>
+
+      <h2>Consent Management Platforms (CMPs)</h2>
+      <p>A CMP presents the cookie banner and manages user preferences. It must be integrated with GTM so marketing tags only fire after consent is granted.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>CMP</th><th>GTM Integration</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><strong>OneTrust</strong></td><td>Native GTM template</td><td>Enterprise-grade, common for large clients</td></tr>
+            <tr><td><strong>Cookiebot (Usercentrics)</strong></td><td>GTM integration guide + template</td><td>Popular in APAC, PDPA-ready out of the box</td></tr>
+            <tr><td><strong>iubenda</strong></td><td>GTM template available</td><td>Lighter weight, good for SME clients</td></tr>
+            <tr><td><strong>Custom / Bespoke</strong></td><td>dataLayer push on consent</td><td>Client dev team builds the banner, pushes consent state to GTM via dataLayer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>How to Validate Consent Behaviour</h2>
+      <p>You must verify two things: tags fire when consent is granted, and tags do <em>not</em> fire when consent is declined.</p>
+      <ol class="steps">
+        <li>
+          <strong>Clear all cookies to reset consent state</strong>
+          <span>F12 &#8594; Application tab &#8594; Storage (left sidebar) &#8594; click "Clear site data". The cookie banner will reappear on next load.</span>
+        </li>
+        <li>
+          <strong>Open the Network tab and set your filter</strong>
+          <span>Keep DevTools open. Filter by <code>facebook.net</code>, <code>collect</code>, or <code>analytics.tiktok</code> depending on which tag you are testing.</span>
+        </li>
+        <li>
+          <strong>Decline all cookies</strong>
+          <span>When the banner appears, click "Decline all" or "Reject". After declining — no marketing tag requests should appear in the Network tab.</span>
+        </li>
+        <li>
+          <strong>Clear cookies again, reload, accept all</strong>
+          <span>Repeat the clear step, reload the page, and this time accept all cookies. The marketing tag requests should now appear.</span>
+        </li>
+        <li>
+          <strong>Document both states</strong>
+          <span>Screenshot: declined = no requests, accepted = requests present. Attach to your campaign launch documentation.</span>
+        </li>
+      </ol>
+      <div class="callout danger">
+        <span class="callout-icon">&#9888;</span>
+        <p><strong>Red flag:</strong> If marketing tags fire after declining consent, the CMP is not connected to the tags. This is a PDPA violation. Do not go live — escalate to the client's developer immediately.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s3')">&#8592; Back</button>
         <button class="btn btn-primary" onclick="goTo('s4')">Validate by Platform &#8594;</button>
       </div>
     </div>
@@ -874,11 +1051,29 @@
     <!-- ═══════════════════════════════════════════════════════ S4: Validate by Platform -->
     <div class="section" id="s4">
       <h1>Validate by Platform</h1>
-      <p class="lead">Step-by-step validation for each platform. Use both the browser extension method (faster, more visual) and the Network tab method (always works, no install required).</p>
+      <p class="lead">New to tag validation? Use the guided wizard below — it walks you through 4 steps. Already comfortable with DevTools? Scroll down to the platform-specific guides.</p>
 
+      <h2>Quick Check Wizard</h2>
+      <p style="color:var(--gray);font-size:0.88rem;margin-bottom:0.75rem">Select your platform and the wizard will show you exactly what to look for.</p>
+      <div class="wizard" id="tag-wizard">
+        <div class="wizard-hdr">
+          <div class="wizard-hdr-label" id="wz-label">Step 1 of 4</div>
+          <div class="wizard-hdr-title" id="wz-title">Which platform are you checking?</div>
+        </div>
+        <div class="wz-track">
+          <div id="wt1" class="wt-active"></div>
+          <div id="wt2"></div>
+          <div id="wt3"></div>
+          <div id="wt4"></div>
+        </div>
+        <div class="wz-body" id="wz-body"></div>
+      </div>
+
+      <h2>Detailed Validation by Platform</h2>
+      <p style="color:var(--gray);font-size:0.88rem;margin-bottom:0.75rem">Full instructions including platform test-events tools and Network tab details.</p>
       <div class="callout tip">
         <span class="callout-icon">&#10003;</span>
-        <p><strong>Always test on the actual website, not in a staging environment.</strong> Tags configured via GTM may behave differently in staging if GTM has separate environments or if certain URL conditions are set. Test on the production URL before sign-off.</p>
+        <p><strong>Always test on the actual website, not in a staging environment.</strong> Tags configured via GTM may behave differently in staging. Test on the production URL before sign-off.</p>
       </div>
 
       <div class="tabs" id="val-tabs">
@@ -1136,7 +1331,7 @@
       </div>
 
       <div class="nav-btns">
-        <button class="btn btn-outline" onclick="goTo('s3')">&#8592; Back</button>
+        <button class="btn btn-outline" onclick="goTo('spdpa')">&#8592; Back</button>
         <button class="btn btn-primary" onclick="goTo('s5')">GTM Walkthrough &#8594;</button>
       </div>
     </div>
@@ -1447,7 +1642,7 @@ Examples:
 
 <script>
   // ── Section management ──────────────────────────────────────
-  const SECTIONS = ['s0','s1','s2','s3','s4','s5','s6','s7'];
+  const SECTIONS = ['s0','s1','s2','s3','spdpa','s4','s5','s6','s7'];
   let currentIndex = 0;
 
   function goTo(id) {
@@ -1461,6 +1656,7 @@ Examples:
     currentIndex = SECTIONS.indexOf(id);
     updateProgress();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (id === 's4') wzRender(); // init wizard when entering validation section
   }
 
   function updateProgress() {
@@ -1672,6 +1868,221 @@ Examples:
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // ── Tag Check Wizard ─────────────────────────────────────────
+  const WZ = {
+    google: {
+      name: 'Google', badge: 'google',
+      ext: 'Tag Assistant Companion',
+      filter: 'collect',
+      extSteps: [
+        'Click the <strong>Tag Assistant</strong> icon in your Chrome toolbar &#8594; click <strong>Enable</strong> &#8594; reload the page.',
+        'Tags on the page will appear as green (working), yellow (warnings), or red (errors).',
+        'Click any tag to see its Measurement ID (e.g. <span class="filter-chip">G-XXXXXXX</span>) or Conversion ID (<span class="filter-chip">AW-XXXXXXX</span>).',
+        'Confirm the ID matches your GA4 Property or Google Ads account.'
+      ],
+      netSteps: [
+        'Press <strong>F12</strong> to open DevTools &#8594; click the <strong>Network</strong> tab &#8594; tick <strong>Preserve log</strong>.',
+        'In the filter box at the top, type <span class="filter-chip">collect</span>.',
+        'Reload the page you want to test.',
+        'Look for a request to <span class="filter-chip">google-analytics.com/g/collect</span>. A status of <strong>204</strong> means success.'
+      ],
+      ok:   'The Google tag is firing. Click the request and open the <strong>Payload</strong> tab to confirm the Measurement ID (tid=G-XXXXXXX) matches your account.',
+      fail: 'No Google tag request found. Common causes: GTM is not published, the tag trigger is wrong, or an ad blocker is active (disable it when testing).'
+    },
+    meta: {
+      name: 'Meta', badge: 'meta',
+      ext: 'Meta Pixel Helper',
+      filter: 'facebook.net',
+      extSteps: [
+        'Click the <strong>Meta Pixel Helper</strong> icon (blue/white pixel icon) in your Chrome toolbar after the page loads.',
+        'A <strong>green</strong> indicator means the Pixel fired on this page. Orange or red means there is a problem.',
+        'Click the icon to see the Pixel ID and which events fired (e.g. PageView, Purchase).',
+        'Confirm the Pixel ID matches your <strong>Events Manager</strong> account.'
+      ],
+      netSteps: [
+        'Press <strong>F12</strong> &#8594; Network tab &#8594; tick <strong>Preserve log</strong>.',
+        'In the filter box, type <span class="filter-chip">facebook.net</span>.',
+        'Reload the page.',
+        'Look for a request to <span class="filter-chip">connect.facebook.net/en_US/fbevents.js</span> — this confirms the Pixel library is loading on the page.'
+      ],
+      ok:   'The Meta Pixel is loading. Verify the Pixel ID in the network request URL matches your Events Manager. Also check for <span class="filter-chip">facebook.com/tr</span> requests — those are the actual event hits.',
+      fail: 'No Meta Pixel request found. The base code may not be on this page. Check that GTM is published, or that the pixel is hardcoded in the page head.'
+    },
+    tiktok: {
+      name: 'TikTok', badge: 'tiktok',
+      ext: 'TikTok Pixel Helper',
+      filter: 'analytics.tiktok',
+      extSteps: [
+        'Click the <strong>TikTok Pixel Helper</strong> icon in your Chrome toolbar.',
+        'A number badge shows how many TikTok Pixel calls fired on the page.',
+        'Click to see the Pixel ID and event names (e.g. PageView, CompletePayment).',
+        'Green = working. Confirm the Pixel ID matches your <strong>TikTok Ads Manager</strong> account.'
+      ],
+      netSteps: [
+        'Press <strong>F12</strong> &#8594; Network tab &#8594; tick <strong>Preserve log</strong>.',
+        'In the filter box, type <span class="filter-chip">analytics.tiktok</span>.',
+        'Reload the page.',
+        'Look for a POST request to <span class="filter-chip">analytics.tiktok.com</span>. Click it &#8594; <strong>Payload</strong> tab to see the Pixel ID and event name.'
+      ],
+      ok:   'The TikTok Pixel is firing. Open the Payload tab of the request to verify the Pixel ID and event name (e.g. "event":"PageView") match your TikTok Ads Manager account.',
+      fail: 'No TikTok Pixel request found. Check GTM is published, the pixel is installed, and disable any ad blockers when testing.'
+    },
+    line: {
+      name: 'LINE', badge: 'line',
+      ext: null,
+      filter: 'insight.line.me',
+      extSteps: null,
+      netSteps: [
+        'Press <strong>F12</strong> &#8594; Network tab &#8594; tick <strong>Preserve log</strong>.',
+        'In the filter box, type <span class="filter-chip">insight.line.me</span>.',
+        'Reload the page.',
+        'Look for a GET request to <span class="filter-chip">insight.line.me</span>. A <strong>200</strong> status means the LINE Tag is firing.'
+      ],
+      ok:   'The LINE Tag is firing. Check the Tag ID in the request URL matches your LINE Ads Platform account (Conversions &#8594; LINE Tag).',
+      fail: 'No LINE Tag request found. Check that the LINE base code is installed and GTM is published. Also try testing on a mobile device — LINE users often access sites through the LINE in-app browser.'
+    }
+  };
+
+  const wzState = { step: 1, platform: null, method: null };
+
+  function wzRender() {
+    const s = wzState;
+    const body = document.getElementById('wz-body');
+    if (!body) return;
+
+    // Update progress track
+    [1,2,3,4].forEach(n => {
+      const t = document.getElementById('wt' + n);
+      if (!t) return;
+      t.className = n < s.step ? 'wt-done' : n === s.step ? 'wt-active' : '';
+    });
+    document.getElementById('wz-label').textContent = 'Step ' + s.step + ' of 4';
+
+    const p = s.platform ? WZ[s.platform] : null;
+
+    if (s.step === 1) {
+      document.getElementById('wz-title').textContent = 'Which platform are you checking?';
+      body.innerHTML =
+        '<div class="platform-grid">' +
+        ['google','meta','tiktok','line'].map(id =>
+          '<div class="pc' + (s.platform===id?' sel':'') + '" onclick="wzPick(\'' + id + '\')">' +
+          '<div class="pc-icon"><span class="badge ' + id + '" style="font-size:0.9rem;padding:0.3em 0.75em">' +
+          (id==='google'?'G':id==='meta'?'f':id==='tiktok'?'T':'L') + '</span></div>' +
+          '<div class="pc-name">' + WZ[id].name + '</div></div>'
+        ).join('') +
+        '</div>' +
+        '<div class="wz-nav"><span></span>' +
+        '<button class="btn btn-primary" onclick="wzNext()" ' + (s.platform?'':'disabled') + '>Next &#8594;</button></div>';
+
+    } else if (s.step === 2) {
+      if (!p.ext) { wzState.method = 'network'; wzState.step = 3; wzRender(); return; }
+      document.getElementById('wz-title').textContent = 'How do you want to check?';
+      body.innerHTML =
+        '<div class="mc-grid">' +
+        '<div class="mc' + (s.method==='extension'?' sel':'') + '" onclick="wzMethod(\'extension\')">' +
+        '<div class="mc-title">Browser Extension <span style="font-size:0.7rem;background:var(--green);color:var(--navy);padding:0.1em 0.5em;border-radius:4px;margin-left:0.4rem">Easier</span></div>' +
+        '<div class="mc-desc">Install a free Chrome extension. It shows tag status visually — no technical knowledge needed.</div></div>' +
+        '<div class="mc' + (s.method==='network'?' sel':'') + '" onclick="wzMethod(\'network\')">' +
+        '<div class="mc-title">Chrome DevTools</div>' +
+        '<div class="mc-desc">No install needed. Use the browser\'s built-in Network tab to look for tag requests.</div></div>' +
+        '</div>' +
+        '<div class="wz-nav"><button class="wz-back" onclick="wzBack()">&#8592; Back</button>' +
+        '<button class="btn btn-primary" onclick="wzNext()" ' + (s.method?'':'disabled') + '>Next &#8594;</button></div>';
+
+    } else if (s.step === 3) {
+      const isExt = s.method === 'extension';
+      document.getElementById('wz-title').textContent = isExt ? 'Install ' + p.ext : 'Open Chrome DevTools';
+      const steps = isExt ? p.extSteps : p.netSteps;
+      body.innerHTML =
+        (isExt ? '<div class="callout info" style="margin-bottom:1rem"><span class="callout-icon">&#8505;</span>' +
+          '<p>Search for <strong>' + p.ext + '</strong> in the Chrome Web Store and install it. Then come back here and click Next.</p></div>' : '') +
+        '<ul class="wz-steps">' +
+        steps.map((st,i) => '<li><div class="wz-num">' + (i+1) + '</div><span>' + st + '</span></li>').join('') +
+        '</ul>' +
+        '<div class="wz-nav"><button class="wz-back" onclick="wzBack()">&#8592; Back</button>' +
+        '<button class="btn btn-primary" onclick="wzNext()">I\'m set up &#8594;</button></div>';
+
+    } else if (s.step === 4) {
+      document.getElementById('wz-title').textContent = 'What do you see?';
+      const hint = s.method === 'extension'
+        ? 'the extension icon shows a result for <strong>' + p.name + '</strong>'
+        : 'a network request containing <span class="filter-chip">' + p.filter + '</span>';
+      body.innerHTML =
+        '<p style="font-size:0.88rem;color:var(--gray);margin-bottom:1.1rem">Look for ' + hint + ' after loading the page you want to test.</p>' +
+        '<div class="mc-grid">' +
+        '<div class="mc" onclick="wzResult(true)" style="border-color:var(--ok);background:#EFFFED">' +
+        '<div class="mc-title" style="color:var(--ok)">Yes — I can see it</div>' +
+        '<div class="mc-desc">The tag appears to be firing on this page.</div></div>' +
+        '<div class="mc" onclick="wzResult(false)" style="border-color:var(--error);background:#FFF0EE">' +
+        '<div class="mc-title" style="color:var(--error)">No — I see nothing</div>' +
+        '<div class="mc-desc">No tag request or the extension shows an error or nothing.</div></div>' +
+        '</div>' +
+        '<div class="wz-nav"><button class="wz-back" onclick="wzBack()">&#8592; Back</button><span></span></div>';
+    }
+  }
+
+  function wzPick(platform) {
+    wzState.platform = platform;
+    wzRender();
+  }
+
+  function wzMethod(m) {
+    wzState.method = m;
+    wzRender();
+  }
+
+  function wzNext() {
+    wzState.step = Math.min(4, wzState.step + 1);
+    wzRender();
+  }
+
+  function wzBack() {
+    wzState.step--;
+    // LINE skips step 2 — go back to step 1
+    if (wzState.step === 2 && wzState.platform && !WZ[wzState.platform].ext) {
+      wzState.step = 1;
+      wzState.method = null;
+    }
+    if (wzState.step < 1) wzState.step = 1;
+    wzRender();
+  }
+
+  function wzResult(found) {
+    const p = WZ[wzState.platform];
+    document.getElementById('wz-title').textContent = found ? 'Tag Confirmed' : 'Tag Not Found';
+    [1,2,3,4].forEach(n => {
+      const t = document.getElementById('wt' + n);
+      if (!t) return;
+      t.className = 'wt-done';
+      if (n === 4 && !found) { t.className = ''; t.style.background = 'var(--error)'; }
+      else { t.style.background = ''; }
+    });
+    const body = document.getElementById('wz-body');
+    body.innerHTML =
+      '<div class="wz-outcome">' +
+      '<div class="outcome-circle ' + (found?'ok':'fail') + '">' + (found?'&#10003;':'&#10005;') + '</div>' +
+      '<div class="outcome-title" style="color:' + (found?'var(--ok)':'var(--error)') + '">' + (found?'Tag is firing':'Tag not detected') + '</div>' +
+      '<div class="outcome-desc">' + (found ? p.ok : p.fail) + '</div>' +
+      '</div>' +
+      (!found ? '<div class="callout warn"><span class="callout-icon">&#9888;</span>' +
+        '<p><strong>Quick checklist:</strong> GTM is published (not just saved) &#8226; Ad blockers are disabled &#8226; You are on the live URL, not staging &#8226; The tag trigger URL matches the page you are testing.</p></div>' : '') +
+      '<div class="wz-nav">' +
+      '<button class="wz-back" onclick="wzReset()">&#8592; Check another tag</button>' +
+      (found
+        ? '<button class="btn btn-primary" onclick="goTo(\'s6\')">Go to Pre-launch Checklist &#8594;</button>'
+        : '<button class="btn btn-primary" onclick="goTo(\'s5\')">GTM Walkthrough &#8594;</button>') +
+      '</div>';
+  }
+
+  function wzReset() {
+    wzState.step = 1; wzState.platform = null; wzState.method = null;
+    [1,2,3,4].forEach(n => {
+      const t = document.getElementById('wt' + n);
+      if (t) { t.className = n===1?'wt-active':''; t.style.background = ''; }
+    });
+    wzRender();
+  }
+
   // ── Copy code ───────────────────────────────────────────────
   function copyCode(btn) {
     const block = btn.parentElement;
@@ -1684,6 +2095,8 @@ Examples:
 
   // Init
   updateProgress();
+  // Wizard renders when user navigates to s4; also init now in case page loads on s4
+  if (document.getElementById('s4').classList.contains('active')) wzRender();
 </script>
 </body>
 </html>
