@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Check Tags — Digital Agency Essentials</title>
+  <style>
+    :root {
+      --navy:   #000050;
+      --green:  #B0F467;
+      --teal:   #93DFE3;
+      --white:  #FFFFFF;
+      --offwhite: #F5F7FA;
+      --gray:   #8892A4;
+      --light:  #E8ECF2;
+      --border: #D1D9E6;
+      --text:   #1A1A2E;
+      --warn:   #F5A623;
+      --ok:     #27AE60;
+      --error:  #E74C3C;
+      --google: #4285F4;
+      --meta:   #1877F2;
+      --tiktok: #010101;
+      --line:   #06C755;
+      --gtm:    #246FDB;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--offwhite);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 56px;
+    }
+    .topbar-title { color: var(--green); font-weight: 700; font-size: 1rem; letter-spacing: 0.03em; }
+    .topbar-sub   { color: var(--teal);  font-size: 0.75rem; margin-top: 1px; }
+    .progress-bar-wrap { flex: 1; max-width: 260px; margin-left: 2rem; }
+    .progress-bar-track { background: rgba(255,255,255,0.15); border-radius: 4px; height: 6px; }
+    .progress-bar-fill  { background: var(--green); border-radius: 4px; height: 6px; width: 0%; transition: width 0.4s ease; }
+    .progress-label { color: var(--teal); font-size: 0.7rem; margin-top: 4px; }
+
+    /* ── Layout ── */
+    .layout { display: flex; margin-top: 56px; min-height: calc(100vh - 56px); }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 240px; min-height: 100%; position: sticky; top: 56px; height: calc(100vh - 56px);
+      background: var(--navy); overflow-y: auto; padding: 1.5rem 0; flex-shrink: 0;
+    }
+    .sidebar-section { padding: 0.25rem 1.5rem; margin-top: 0.75rem; }
+    .sidebar-section-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--teal); margin-bottom: 0.5rem;
+    }
+    .nav-item {
+      display: block; padding: 0.45rem 0.75rem; border-radius: 6px; cursor: pointer;
+      color: rgba(255,255,255,0.65); font-size: 0.82rem; text-decoration: none;
+      transition: background 0.15s, color 0.15s; margin-bottom: 2px;
+    }
+    .nav-item:hover  { background: rgba(255,255,255,0.08); color: #fff; }
+    .nav-item.active { background: var(--green); color: var(--navy); font-weight: 700; }
+    .nav-num { display: inline-block; width: 18px; font-size: 0.72rem; opacity: 0.6; }
+
+    /* ── Main content ── */
+    .main { flex: 1; padding: 2.5rem 2rem 4rem; max-width: 900px; }
+
+    /* ── Sections ── */
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* ── Typography ── */
+    h1 { font-size: 1.9rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; line-height: 1.2; }
+    h2 { font-size: 1.35rem; font-weight: 700; color: var(--navy); margin: 2rem 0 0.75rem; border-left: 4px solid var(--green); padding-left: 0.75rem; }
+    h3 { font-size: 1.05rem; font-weight: 700; color: var(--navy); margin: 1.5rem 0 0.5rem; }
+    p  { margin-bottom: 0.9rem; color: #2d3a52; }
+    ul, ol { padding-left: 1.4rem; margin-bottom: 0.9rem; color: #2d3a52; }
+    li { margin-bottom: 0.35rem; }
+    strong { color: var(--navy); }
+    code {
+      background: #EEF2FF; color: var(--navy); font-family: 'Consolas', 'Fira Code', monospace;
+      font-size: 0.84em; padding: 0.15em 0.45em; border-radius: 4px;
+    }
+
+    /* ── Lead ── */
+    .lead {
+      font-size: 1.05rem; color: var(--gray); margin-bottom: 1.75rem;
+      padding-bottom: 1.5rem; border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Cards ── */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+    .card {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.25rem; transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,80,0.1); transform: translateY(-2px); }
+    .card-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .card-title { font-weight: 700; font-size: 0.9rem; color: var(--navy); margin-bottom: 0.25rem; }
+    .card-desc  { font-size: 0.8rem; color: var(--gray); }
+
+    /* ── Callouts ── */
+    .callout {
+      border-radius: 8px; padding: 1rem 1.25rem; margin: 1.25rem 0;
+      border-left: 4px solid;
+      display: flex; gap: 0.75rem; align-items: flex-start;
+    }
+    .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .callout.info    { background: #EEF6FF; border-color: #4285F4; }
+    .callout.tip     { background: #EFFFED; border-color: var(--ok); }
+    .callout.warn    { background: #FFF8ED; border-color: var(--warn); }
+    .callout.danger  { background: #FFF0EE; border-color: var(--error); }
+    .callout p { margin: 0; font-size: 0.88rem; }
+
+    /* ── Platform tabs ── */
+    .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1.25rem 0 0; }
+    .tab-btn {
+      padding: 0.5rem 1.1rem; border-radius: 6px 6px 0 0; border: 1px solid var(--border);
+      border-bottom: none; background: var(--light); cursor: pointer; font-size: 0.85rem;
+      font-weight: 600; color: var(--gray); transition: background 0.15s, color 0.15s;
+    }
+    .tab-btn.google  { --c: var(--google); }
+    .tab-btn.meta    { --c: var(--meta);   }
+    .tab-btn.tiktok  { --c: var(--tiktok); }
+    .tab-btn.line    { --c: var(--line);   }
+    .tab-btn.active  { background: #fff; color: var(--c, var(--navy)); border-color: var(--c, var(--navy)); border-bottom: 3px solid var(--c, var(--navy)); }
+    .tab-panel { display: none; background: #fff; border: 1px solid var(--border); border-radius: 0 8px 8px 8px; padding: 1.5rem; }
+    .tab-panel.active { display: block; animation: fadeIn 0.2s; }
+
+    /* ── Platform badge ── */
+    .badge {
+      display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 0.2em 0.6em; border-radius: 4px; margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+    .badge.google { background: #E8F0FE; color: var(--google); }
+    .badge.meta   { background: #E7F3FF; color: var(--meta);   }
+    .badge.tiktok { background: #F0F0F0; color: var(--tiktok); }
+    .badge.line   { background: #E6FBF0; color: var(--line);   }
+    .badge.gtm    { background: #E6F0FF; color: var(--gtm);    }
+    .badge.ga4    { background: #FFF3E0; color: #F57C00;       }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; list-style: none; padding: 0; margin: 1rem 0; }
+    .steps li {
+      counter-increment: step; position: relative;
+      padding: 0.85rem 1rem 0.85rem 3rem; margin-bottom: 0.5rem;
+      background: #fff; border: 1px solid var(--border); border-radius: 8px;
+    }
+    .steps li::before {
+      content: counter(step); position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+      width: 22px; height: 22px; border-radius: 50%; background: var(--navy); color: var(--green);
+      font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    }
+    .steps li strong { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .steps li span   { font-size: 0.82rem; color: var(--gray); }
+
+    /* ── Code block ── */
+    .code-block {
+      background: #0D1117; color: #C9D1D9; font-family: 'Consolas', monospace;
+      font-size: 0.83rem; line-height: 1.6; padding: 1.25rem; border-radius: 8px;
+      overflow-x: auto; margin: 1rem 0; position: relative;
+    }
+    .code-block .copy-btn {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #aaa; font-size: 0.72rem; padding: 0.25em 0.7em; border-radius: 4px;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .code-block .copy-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .hl-kw   { color: #FF7B72; }
+    .hl-str  { color: #A5D6FF; }
+    .hl-num  { color: #79C0FF; }
+    .hl-cmt  { color: #8B949E; font-style: italic; }
+    .hl-fn   { color: #D2A8FF; }
+    .hl-tag  { color: #7EE787; }
+
+    /* ── Network diagram ── */
+    .flow-diagram {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      padding: 2rem; margin: 1.5rem 0; overflow-x: auto;
+    }
+    .flow-row { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: nowrap; }
+    .flow-box {
+      min-width: 100px; text-align: center; padding: 0.6rem 0.9rem;
+      border-radius: 8px; font-size: 0.78rem; font-weight: 700;
+    }
+    .flow-arrow { color: var(--gray); font-size: 1.2rem; padding: 0 0.4rem; flex-shrink: 0; }
+    .flow-box.user    { background: #EEF6FF; color: var(--google); border: 2px solid var(--google); }
+    .flow-box.browser { background: #F5F0FF; color: #6B21A8; border: 2px solid #9333EA; }
+    .flow-box.gtm-box { background: #E6F0FF; color: var(--gtm);    border: 2px solid var(--gtm); }
+    .flow-box.platform{ background: #EFFFED; color: var(--ok);     border: 2px solid var(--ok); }
+    .flow-box.server  { background: #FFF3E0; color: #F57C00;       border: 2px solid #F57C00; }
+    .flow-label { font-size: 0.68rem; font-weight: 400; color: var(--gray); margin-top: 3px; }
+
+    /* ── Checklist ── */
+    .checklist { list-style: none; padding: 0; margin: 1rem 0; }
+    .checklist li {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 0.4rem;
+      background: #fff; border: 1px solid var(--border); cursor: pointer;
+      transition: background 0.15s;
+    }
+    .checklist li:hover { background: #F8FAFF; }
+    .checklist li.done  { background: #EFFFED; border-color: #A7D7A9; }
+    .check-box {
+      width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 4px;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; transition: all 0.15s; margin-top: 1px;
+    }
+    .done .check-box { background: var(--ok); border-color: var(--ok); color: #fff; }
+    .check-text { font-size: 0.87rem; }
+    .done .check-text { text-decoration: line-through; color: var(--gray); }
+    .checklist-progress { font-size: 0.82rem; color: var(--gray); margin-bottom: 0.5rem; }
+
+    /* ── Quiz ── */
+    .quiz-card {
+      background: #fff; border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; margin-bottom: 1.25rem;
+    }
+    .quiz-q { font-weight: 700; font-size: 0.95rem; margin-bottom: 1rem; color: var(--navy); }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .quiz-opt {
+      padding: 0.6rem 1rem; border: 2px solid var(--border); border-radius: 8px;
+      cursor: pointer; font-size: 0.87rem; transition: border-color 0.15s, background 0.15s;
+    }
+    .quiz-opt:hover:not(.locked) { border-color: var(--navy); background: #F8FAFF; }
+    .quiz-opt.correct { border-color: var(--ok); background: #EFFFED; color: var(--ok); font-weight: 700; }
+    .quiz-opt.wrong   { border-color: var(--error); background: #FFF0EE; color: var(--error); }
+    .quiz-opt.locked  { cursor: default; }
+    .quiz-feedback { margin-top: 0.75rem; font-size: 0.84rem; padding: 0.6rem 1rem; border-radius: 6px; display: none; }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok   { background: #EFFFED; color: var(--ok); }
+    .quiz-feedback.bad  { background: #FFF0EE; color: var(--error); }
+    .quiz-score {
+      text-align: center; font-size: 1.3rem; font-weight: 800; color: var(--navy);
+      padding: 1.5rem; background: #fff; border: 2px solid var(--green);
+      border-radius: 12px; margin-top: 1.5rem; display: none;
+    }
+
+    /* ── Accordion ── */
+    .accordion { margin: 0.5rem 0; }
+    .accordion-item { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem; overflow: hidden; }
+    .accordion-head {
+      width: 100%; text-align: left; padding: 0.9rem 1.1rem;
+      background: #fff; cursor: pointer; font-size: 0.88rem; font-weight: 600;
+      color: var(--navy); display: flex; justify-content: space-between; align-items: center;
+      border: none; transition: background 0.15s;
+    }
+    .accordion-head:hover { background: #F8FAFF; }
+    .accordion-head.open  { background: var(--navy); color: var(--green); }
+    .accordion-icon { font-size: 0.8rem; transition: transform 0.2s; }
+    .accordion-head.open .accordion-icon { transform: rotate(180deg); }
+    .accordion-body { display: none; padding: 1rem 1.1rem; background: #FAFBFD; font-size: 0.87rem; border-top: 1px solid var(--border); }
+    .accordion-body.open { display: block; animation: fadeIn 0.2s; }
+
+    /* ── Network tab guide visual ── */
+    .devtools-mock {
+      background: #1E1E2E; border-radius: 10px; overflow: hidden; margin: 1.25rem 0;
+      font-family: 'Consolas', monospace; font-size: 0.78rem;
+    }
+    .devtools-toolbar {
+      background: #2D2D3F; padding: 0.5rem 1rem;
+      display: flex; gap: 1rem; border-bottom: 1px solid #444;
+    }
+    .dt-tab { color: #aaa; font-size: 0.75rem; cursor: default; padding: 0.15rem 0.5rem; border-radius: 4px; }
+    .dt-tab.active { background: #1E1E2E; color: #4FC3F7; border-bottom: 2px solid #4FC3F7; }
+    .dt-filter { background: #1E1E2E; border: 1px solid #555; color: #eee; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.72rem; width: 130px; }
+    .devtools-body { padding: 0; }
+    .dt-row {
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.3rem 1rem;
+      color: #C9D1D9;
+    }
+    .dt-row.header { background: #2D2D3F; color: #888; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .dt-row.hit    { color: #7EE787; }
+    .dt-row.miss   { color: #FF7B72; opacity: 0.6; }
+    .dt-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { background: var(--navy); color: #fff; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; }
+    td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); }
+    tr:nth-child(even) td { background: #FAFBFD; }
+    tr:hover td { background: #EEF2FF; }
+
+    /* ── Nav buttons ── */
+    .nav-btns { display: flex; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .btn {
+      padding: 0.6rem 1.4rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700;
+      cursor: pointer; border: 2px solid transparent; transition: all 0.15s;
+    }
+    .btn-primary { background: var(--navy); color: var(--green); }
+    .btn-primary:hover { background: #000080; }
+    .btn-outline { background: transparent; color: var(--navy); border-color: var(--navy); }
+    .btn-outline:hover { background: var(--navy); color: var(--green); }
+    .btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── Chip ── */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+    .chip {
+      padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600;
+      border: 1.5px solid; cursor: default;
+    }
+
+    /* ── GTM structure visual ── */
+    .gtm-tree { font-size: 0.85rem; }
+    .gtm-container {
+      border: 2px solid var(--gtm); border-radius: 10px; padding: 1.25rem; background: #F0F5FF;
+    }
+    .gtm-container-label { font-weight: 800; color: var(--gtm); margin-bottom: 1rem; font-size: 0.95rem; }
+    .gtm-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+    .gtm-col { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; }
+    .gtm-col-label { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .gtm-col.tags    .gtm-col-label { color: #E74C3C; }
+    .gtm-col.triggers .gtm-col-label { color: #F39C12; }
+    .gtm-col.vars    .gtm-col-label { color: #8E44AD; }
+    .gtm-item { font-size: 0.78rem; padding: 0.35rem 0.5rem; background: #F8FAFF; border-radius: 5px; margin-bottom: 0.35rem; color: #2d3a52; }
+
+    @media (max-width: 768px) {
+      .sidebar { width: 0; display: none; }
+      .main { padding: 1.5rem 1rem 3rem; }
+      .gtm-cols { grid-template-columns: 1fr; }
+      .flow-row { flex-wrap: wrap; justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div>
+    <div class="topbar-title">How to Check Tags</div>
+    <div class="topbar-sub">Digital Agency Essentials</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">Section 1 of 6</div>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Getting Started</div>
+      <a class="nav-item active" data-section="s0" onclick="goTo('s0')">
+        <span class="nav-num">0</span>Overview
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Tag Fundamentals</div>
+      <a class="nav-item" data-section="s1" onclick="goTo('s1')">
+        <span class="nav-num">1</span>What Is a Tag?
+      </a>
+      <a class="nav-item" data-section="s2" onclick="goTo('s2')">
+        <span class="nav-num">2</span>Tag Generation
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Validation</div>
+      <a class="nav-item" data-section="s3" onclick="goTo('s3')">
+        <span class="nav-num">3</span>How Tags Fire
+      </a>
+      <a class="nav-item" data-section="s4" onclick="goTo('s4')">
+        <span class="nav-num">4</span>Validate by Platform
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Implementation</div>
+      <a class="nav-item" data-section="s5" onclick="goTo('s5')">
+        <span class="nav-num">5</span>GTM Walkthrough
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Practice</div>
+      <a class="nav-item" data-section="s6" onclick="goTo('s6')">
+        <span class="nav-num">6</span>Validation Checklist
+      </a>
+      <a class="nav-item" data-section="s7" onclick="goTo('s7')">
+        <span class="nav-num">7</span>Knowledge Check
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════════════════════════ S0: Overview -->
+    <div class="section active" id="s0">
+      <h1>How to Check Tags</h1>
+      <p class="lead">A practical guide for buyers and planners in digital advertising. By the end of this lesson, you will be able to tell whether a campaign tag is working — before the campaign goes live.</p>
+
+      <h2>What You Will Learn</h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">&#9674;</div>
+          <div class="card-title">What Is a Tag</div>
+          <div class="card-desc">What tags actually are, the different types, and why they exist.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9670;</div>
+          <div class="card-title">Tag Generation</div>
+          <div class="card-desc">How to create tags in Google, Meta, TikTok, and LINE platforms.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#10003;</div>
+          <div class="card-title">Tag Validation</div>
+          <div class="card-desc">How to confirm a tag is firing correctly before launch day.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9881;</div>
+          <div class="card-title">GTM Implementation</div>
+          <div class="card-desc">How tags enter a website through Google Tag Manager.</div>
+        </div>
+      </div>
+
+      <h2>Why This Matters to You</h2>
+      <p>As a buyer or planner, you rely on tag data for:</p>
+      <ul>
+        <li><strong>Conversion reporting</strong> — did the campaign drive real business results?</li>
+        <li><strong>Audience building</strong> — remarketing lists only populate if tags fire.</li>
+        <li><strong>Optimisation signals</strong> — algorithms need clean conversion data to bid effectively.</li>
+        <li><strong>Invoicing confidence</strong> — you need to be certain tracked events reflect real actions.</li>
+      </ul>
+
+      <div class="callout warn">
+        <span class="callout-icon">&#9888;</span>
+        <p>A campaign running without a validated tag is effectively blind. You are spending budget with no measurement. Always validate before launch.</p>
+      </div>
+
+      <h2>Pre-Requisites</h2>
+      <p>You do not need to write code. You need:</p>
+      <ul>
+        <li>Google Chrome browser</li>
+        <li>Access to the campaign platform (Google Ads / Meta Ads Manager / TikTok Ads / LINE Ads)</li>
+        <li>The URL of the client's website or landing page</li>
+      </ul>
+
+      <div class="nav-btns">
+        <button class="btn btn-primary" onclick="goTo('s1')">Start Learning &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S1: What Is a Tag -->
+    <div class="section" id="s1">
+      <h1>What Is a Tag?</h1>
+      <p class="lead">A tag is a small piece of JavaScript code — also called a pixel, snippet, or script — that a platform places on a website to collect data. The tag sends information back to the ad platform every time a visitor does something.</p>
+
+      <h2>The Simple Mental Model</h2>
+      <div class="flow-diagram">
+        <div class="flow-row">
+          <div class="flow-box user">Visitor<div class="flow-label">opens page</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box browser">Browser<div class="flow-label">loads HTML + JS</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box gtm-box">Tag fires<div class="flow-label">sends signal</div></div>
+          <div class="flow-arrow">&#8594;</div>
+          <div class="flow-box platform">Platform server<div class="flow-label">records event</div></div>
+        </div>
+      </div>
+      <p>The tag fires silently in the background. The visitor never sees it. The platform receives the event data within milliseconds.</p>
+
+      <h2>Types of Tags</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tag Type</th><th>What It Tracks</th><th>Platform Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Base / Global Tag</strong></td><td>All page views — placed site-wide</td><td>GA4 base tag, Meta Pixel base code, TikTok base code</td></tr>
+            <tr><td><strong>Conversion Tag</strong></td><td>A specific action (purchase, form submit, phone call)</td><td>Google Ads conversion tag, Meta conversion event</td></tr>
+            <tr><td><strong>Remarketing Tag</strong></td><td>Page visits for building audiences</td><td>Google Ads remarketing tag, Meta Pixel audience</td></tr>
+            <tr><td><strong>Analytics Tag</strong></td><td>User behaviour (sessions, clicks, scroll depth)</td><td>GA4 event tag, Hotjar, Microsoft Clarity</td></tr>
+            <tr><td><strong>Viewability / IAS Tag</strong></td><td>Ad impression quality (viewability, brand safety)</td><td>IAS pixel, DoubleVerify tag</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What a Tag Looks Like</h2>
+      <p>Here is what a Meta Pixel base tag looks like in raw HTML. The client's developer (or GTM) places this in the <code>&lt;head&gt;</code> of each page.</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<span class="hl-cmt">&lt;!-- Meta Pixel Code --&gt;</span>
+<span class="hl-tag">&lt;script&gt;</span>
+  !<span class="hl-fn">function</span>(f,b,e,v,n,t,s) {
+    <span class="hl-kw">if</span>(f.fbq)<span class="hl-kw">return</span>; n=f.fbq=<span class="hl-fn">function</span>(){...};
+    ...
+    fbq(<span class="hl-str">'init'</span>, <span class="hl-str">'1234567890'</span>);  <span class="hl-cmt">// ← your Pixel ID</span>
+    fbq(<span class="hl-str">'track'</span>, <span class="hl-str">'PageView'</span>);
+  }(window, ...);
+<span class="hl-tag">&lt;/script&gt;</span>
+<span class="hl-tag">&lt;noscript&gt;</span><span class="hl-tag">&lt;img</span> <span class="hl-str">height="1" width="1"</span>
+  src=<span class="hl-str">"https://www.facebook.com/tr?id=1234567890&amp;ev=PageView"</span><span class="hl-tag">/&gt;&lt;/noscript&gt;</span>
+      </div>
+
+      <div class="callout info">
+        <span class="callout-icon">&#8505;</span>
+        <p>Every tag has a unique ID — the Pixel ID, Conversion ID, or Property ID. This is what links the tag back to <em>your</em> account. Always verify the ID matches your platform account.</p>
+      </div>
+
+      <h2>Tag vs. Event</h2>
+      <p>People often confuse these two terms.</p>
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            <span>The "base tag" (always on, fires on every page)</span>
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>This is the main tag loaded once across the whole site. It identifies the user and initialises the platform's tracking library. Without this, nothing else works. A GA4 base tag, Meta Pixel base code, TikTok base code, and LINE Tag are all examples.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            <span>The "event tag" (fires only when a specific action happens)</span>
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>This fires on top of the base tag for a specific user action — a purchase, a form submission, a button click. For example: <code>fbq('track', 'Purchase')</code> or <code>gtag('event', 'purchase')</code>. These are what feed your conversion reports and bidding signals.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            <span>What happens if only the base tag is installed?</span>
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>The platform will see page views and can build remarketing audiences. But it will NOT record conversions. Your campaign will report zero conversions even if sales are happening. This is a very common mistake when a client installs the base code but forgets the conversion event.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s0')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('s2')">Tag Generation &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S2: Tag Generation -->
+    <div class="section" id="s2">
+      <h1>Tag Generation</h1>
+      <p class="lead">Each platform has its own interface for generating a tag. The output is always the same: a snippet of code and an ID. Here is how to generate tags for the four major platforms.</p>
+
+      <div class="tabs" id="gen-tabs">
+        <button class="tab-btn google active" onclick="switchTab('gen', 'google')">Google</button>
+        <button class="tab-btn meta"   onclick="switchTab('gen', 'meta')">Meta</button>
+        <button class="tab-btn tiktok" onclick="switchTab('gen', 'tiktok')">TikTok</button>
+        <button class="tab-btn line"   onclick="switchTab('gen', 'line')">LINE</button>
+      </div>
+
+      <!-- Google -->
+      <div class="tab-panel active" id="gen-google">
+        <h3><span class="badge google">Google</span>Google Ads Conversion Tag</h3>
+        <p>Google Ads conversion tracking lets you measure specific actions on the website that result from ad clicks.</p>
+        <ol class="steps">
+          <li>
+            <strong>Go to Goals</strong>
+            <span>In Google Ads, click the wrench icon (Tools) &#8594; Measurement &#8594; Conversions.</span>
+          </li>
+          <li>
+            <strong>Create conversion action</strong>
+            <span>Click "+ New conversion action" &#8594; select "Website" &#8594; enter the website URL &#8594; click "Scan".</span>
+          </li>
+          <li>
+            <strong>Set up conversion</strong>
+            <span>Name the conversion (e.g., "Purchase"), set value, count (one/every), and click-through window.</span>
+          </li>
+          <li>
+            <strong>Get the tag</strong>
+            <span>Select "Use Google Tag Manager" (recommended) or "Install the tag yourself". You will see a Conversion ID (e.g., <code>AW-123456789</code>) and a Conversion Label.</span>
+          </li>
+          <li>
+            <strong>Send to developer or implement via GTM</strong>
+            <span>Copy the Conversion ID and Label. Enter them into GTM as a Google Ads Conversion Tracking tag type.</span>
+          </li>
+        </ol>
+        <div class="callout tip">
+          <span class="callout-icon">&#10003;</span>
+          <p>For GA4, the tag is generated in Google Analytics &#8594; Admin &#8594; Data Streams. Your Measurement ID looks like <code>G-XXXXXXXXXX</code>. Install it via GTM using the "Google Analytics: GA4 Configuration" tag type.</p>
+        </div>
+      </div>
+
+      <!-- Meta -->
+      <div class="tab-panel" id="gen-meta">
+        <h3><span class="badge meta">Meta</span>Meta Pixel</h3>
+        <p>The Meta Pixel is a base code that fires on every page. Conversion events are added on top of it.</p>
+        <ol class="steps">
+          <li>
+            <strong>Open Events Manager</strong>
+            <span>Go to Meta Business Suite &#8594; Events Manager (or business.facebook.com &#8594; Data Sources).</span>
+          </li>
+          <li>
+            <strong>Create or select your Pixel</strong>
+            <span>Click "+ Connect data" &#8594; Web &#8594; Facebook Pixel &#8594; "Create Pixel". Give it a name (usually the client name).</span>
+          </li>
+          <li>
+            <strong>Copy the Pixel ID</strong>
+            <span>The Pixel ID is a 15–16 digit number shown at the top of the Pixel details page. Keep this safe — this is how all events link back to your ad account.</span>
+          </li>
+          <li>
+            <strong>Get the base code</strong>
+            <span>Click "Set up" &#8594; "Install code manually". Copy the full base code. It contains your Pixel ID embedded.</span>
+          </li>
+          <li>
+            <strong>Add conversion events</strong>
+            <span>After the base code, add standard events like <code>fbq('track', 'Purchase')</code> or custom events on specific pages/buttons. These can also be configured through GTM or the Conversions API.</span>
+          </li>
+        </ol>
+        <div class="callout info">
+          <span class="callout-icon">&#8505;</span>
+          <p>Meta offers the <strong>Conversions API (CAPI)</strong> as a server-side alternative or supplement to the pixel. This bypasses browser blocking and is increasingly important. Ask your client if they have CAPI set up — if not, tag data may be underreported.</p>
+        </div>
+      </div>
+
+      <!-- TikTok -->
+      <div class="tab-panel" id="gen-tiktok">
+        <h3><span class="badge tiktok">TikTok</span>TikTok Pixel</h3>
+        <p>TikTok's pixel works similarly to Meta. You install a base pixel site-wide, then fire standard events for conversions.</p>
+        <ol class="steps">
+          <li>
+            <strong>Open TikTok Ads Manager</strong>
+            <span>Go to ads.tiktok.com &#8594; Assets &#8594; Events &#8594; Website Pixel.</span>
+          </li>
+          <li>
+            <strong>Create a pixel</strong>
+            <span>Click "Create Pixel" &#8594; choose "TikTok Pixel" &#8594; name it &#8594; select your connection method (Pixel code or Partner platform).</span>
+          </li>
+          <li>
+            <strong>Choose installation method</strong>
+            <span>Select "Manually install pixel code" or "Use a tag manager". For GTM, TikTok provides direct integration.</span>
+          </li>
+          <li>
+            <strong>Copy the Pixel ID</strong>
+            <span>Your Pixel ID appears in the setup page and in Assets &#8594; Events. It looks like <code>CXXXXXXXXXXXXXXXXXX</code>.</span>
+          </li>
+          <li>
+            <strong>Set up events</strong>
+            <span>Add standard events using the TikTok Event Builder or manually with <code>ttq.track('CompletePayment')</code> for purchases.</span>
+          </li>
+        </ol>
+        <div class="callout warn">
+          <span class="callout-icon">&#9888;</span>
+          <p>TikTok also offers <strong>Events API</strong> for server-side tracking. Browser-side pixel data can be limited by iOS privacy changes — check if your client has Events API configured for accurate purchase reporting.</p>
+        </div>
+      </div>
+
+      <!-- LINE -->
+      <div class="tab-panel" id="gen-line">
+        <h3><span class="badge line">LINE</span>LINE Tag</h3>
+        <p>LINE Tag is LINE Ads Platform's tracking pixel. It is widely used in Thailand for LINE advertising campaigns.</p>
+        <ol class="steps">
+          <li>
+            <strong>Open LINE Ads Platform</strong>
+            <span>Go to ads.line.me &#8594; select your Ad Account &#8594; Conversions &#8594; LINE Tag.</span>
+          </li>
+          <li>
+            <strong>Get the Base Code</strong>
+            <span>Click "LINE Tag" to see your base code. The Base Code includes your unique Tag ID. Copy it. This goes in the <code>&lt;head&gt;</code> of every page.</span>
+          </li>
+          <li>
+            <strong>Set up Conversion Code</strong>
+            <span>Go to "Conversions" &#8594; "Create a conversion". Choose the conversion type (Page View, Purchase, etc.). Copy the Conversion Code snippet.</span>
+          </li>
+          <li>
+            <strong>Install via GTM (recommended)</strong>
+            <span>In GTM, create a Custom HTML tag. Paste the LINE base code in a tag firing on All Pages. Create a second Custom HTML tag with the conversion code firing only on the confirmation/thank-you page.</span>
+          </li>
+          <li>
+            <strong>Note your Tag ID</strong>
+            <span>The Tag ID appears in the base code and looks like a long alphanumeric string. You will need it for validation.</span>
+          </li>
+        </ol>
+        <div class="callout info">
+          <span class="callout-icon">&#8505;</span>
+          <p>LINE Tag does not have a dedicated browser extension. Validation is done via Chrome DevTools (Network tab) or the LINE Ads Platform test conversion tool under Conversions &#8594; Tag Setup &#8594; Test.</p>
+        </div>
+      </div>
+
+      <h2>What to Hand Over to the Developer</h2>
+      <p>When you send a tag to a developer or add it to GTM yourself, always include:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Why It Matters</th></tr></thead>
+          <tbody>
+            <tr><td>The platform (Google Ads, Meta, TikTok, LINE)</td><td>Determines which GTM tag type to use</td></tr>
+            <tr><td>The unique ID (Pixel ID, Conversion ID, etc.)</td><td>Links the tag to your ad account</td></tr>
+            <tr><td>The conversion label (Google Ads only)</td><td>Identifies which conversion action to record</td></tr>
+            <tr><td>The trigger URL or page</td><td>Where the conversion event should fire (e.g., /thank-you)</td></tr>
+            <tr><td>The event name</td><td>e.g., Purchase, Lead, CompleteRegistration</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s1')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('s3')">How Tags Fire &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S3: How Tags Fire -->
+    <div class="section" id="s3">
+      <h1>How Tags Fire</h1>
+      <p class="lead">Before you can validate a tag, you need to understand what happens technically when a tag fires. This section explains what you are looking for in the browser.</p>
+
+      <h2>The Three-Step Pattern</h2>
+      <p>Every tag follows the same three-step pattern, regardless of platform:</p>
+      <ol class="steps">
+        <li>
+          <strong>Trigger condition is met</strong>
+          <span>The visitor lands on a page, or clicks a button, or submits a form — whatever was set as the trigger.</span>
+        </li>
+        <li>
+          <strong>JavaScript executes</strong>
+          <span>The tag code runs in the browser. It collects data (page URL, event type, order value, etc.) and prepares an HTTP request.</span>
+        </li>
+        <li>
+          <strong>Network request is sent</strong>
+          <span>The browser sends a small request to the platform's server — this is the "ping" you can observe in the Network tab of Chrome DevTools.</span>
+        </li>
+      </ol>
+
+      <h2>What You Can See in Chrome DevTools</h2>
+      <p>Open the Network tab in Chrome DevTools (F12 &#8594; Network). Each row represents one network request. When a tag fires, you will see a request to that platform's tracking server.</p>
+
+      <div class="devtools-mock">
+        <div class="devtools-toolbar">
+          <span class="dt-tab">Elements</span>
+          <span class="dt-tab">Console</span>
+          <span class="dt-tab active">Network</span>
+          <span class="dt-tab">Sources</span>
+          <input class="dt-filter" type="text" value="Filter" readonly>
+        </div>
+        <div class="devtools-body">
+          <div class="dt-row header"><span>Name</span><span>Status</span><span>Type</span></div>
+          <div class="dt-row hit"><span class="dt-name">collect?v=2&amp;tid=G-XXXXXX&amp;en=purchase</span><span>200</span><span>fetch</span></div>
+          <div class="dt-row hit"><span class="dt-name">tr?id=1234567890&amp;ev=Purchase&amp;...</span><span>200</span><span>image</span></div>
+          <div class="dt-row miss"><span class="dt-name">analytics.tiktok.com/api/v1/event</span><span>&#10005; blocked</span><span>xhr</span></div>
+        </div>
+      </div>
+
+      <h2>Tracking Endpoints to Know</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Platform</th><th>Network Request Filter Keyword</th><th>Domain</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge ga4">GA4</span> Google Analytics 4</td>
+              <td><code>collect</code> or <code>g/collect</code></td>
+              <td>google-analytics.com, analytics.google.com</td>
+            </tr>
+            <tr>
+              <td><span class="badge google">Google Ads</span></td>
+              <td><code>googleadservices</code> or <code>gtag</code></td>
+              <td>googleadservices.com, google.com/pagead</td>
+            </tr>
+            <tr>
+              <td><span class="badge meta">Meta</span> Facebook Pixel</td>
+              <td><code>facebook.net</code> or <code>fbevents</code></td>
+              <td>connect.facebook.net, facebook.com/tr</td>
+            </tr>
+            <tr>
+              <td><span class="badge tiktok">TikTok</span> Pixel</td>
+              <td><code>tiktok</code> or <code>analytics.tiktok</code></td>
+              <td>analytics.tiktok.com</td>
+            </tr>
+            <tr>
+              <td><span class="badge line">LINE</span> Tag</td>
+              <td><code>insight.line.me</code></td>
+              <td>insight.line.me</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Common Reasons a Tag Does Not Fire</h2>
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            Tag code was never placed on the page
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>The most common reason. The developer installed the tag on the homepage but not the thank-you or confirmation page where the conversion fires. Check by viewing the page source and searching for the tag ID or domain.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            GTM container is not published
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>Changes made in GTM are only live after you click <strong>Submit</strong> and then <strong>Publish</strong>. If someone updated a tag in GTM but forgot to publish, the live website still runs the old version.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            Wrong trigger configured
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>The trigger URL path does not match the actual confirmation page URL. For example, the trigger was set to fire on URLs containing "/thank-you" but the real confirmation page is "/order-complete".</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            Ad blocker or browser privacy settings
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>When testing, disable ad blockers and browser extensions like uBlock Origin. These block tracking requests and will make a working tag appear broken. Test in a clean Chrome profile or incognito with extensions disabled.</p>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-head" onclick="toggleAccordion(this)">
+            Wrong Pixel ID or Conversion Label
+            <span class="accordion-icon">&#9660;</span>
+          </button>
+          <div class="accordion-body">
+            <p>The tag fires but goes to the wrong account. The Network request will show a 200 (success), but data never arrives in your platform because it was sent to a different account's pixel. Always verify the ID in the network request payload matches your account.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s2')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('s4')">Validate by Platform &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S4: Validate by Platform -->
+    <div class="section" id="s4">
+      <h1>Validate by Platform</h1>
+      <p class="lead">Step-by-step validation for each platform. Use both the browser extension method (faster, more visual) and the Network tab method (always works, no install required).</p>
+
+      <div class="callout tip">
+        <span class="callout-icon">&#10003;</span>
+        <p><strong>Always test on the actual website, not in a staging environment.</strong> Tags configured via GTM may behave differently in staging if GTM has separate environments or if certain URL conditions are set. Test on the production URL before sign-off.</p>
+      </div>
+
+      <div class="tabs" id="val-tabs">
+        <button class="tab-btn google active" onclick="switchTab('val', 'google')">Google</button>
+        <button class="tab-btn meta"          onclick="switchTab('val', 'meta')">Meta</button>
+        <button class="tab-btn tiktok"        onclick="switchTab('val', 'tiktok')">TikTok</button>
+        <button class="tab-btn line"          onclick="switchTab('val', 'line')">LINE</button>
+      </div>
+
+      <!-- Validate: Google -->
+      <div class="tab-panel active" id="val-google">
+        <h3><span class="badge google">Google</span>GA4 + Google Ads Tags</h3>
+
+        <h3>Method A: Google Tag Assistant (Recommended)</h3>
+        <ol class="steps">
+          <li>
+            <strong>Install the extension</strong>
+            <span>Search "Google Tag Assistant Legacy" or "Tag Assistant Companion" in the Chrome Web Store. Install it.</span>
+          </li>
+          <li>
+            <strong>Enable recording</strong>
+            <span>Click the Tag Assistant icon &#8594; click "Enable". Reload the page you want to test.</span>
+          </li>
+          <li>
+            <strong>Read the results</strong>
+            <span>Each tag found on the page will show as green (good), yellow (warnings), or red (errors). Click on any tag to see its Measurement ID or Conversion ID.</span>
+          </li>
+          <li>
+            <strong>Check the ID matches your account</strong>
+            <span>In Google Ads &#8594; Tools &#8594; Conversions, or in GA4 Admin &#8594; Data Streams, confirm the Measurement ID matches what Tag Assistant found.</span>
+          </li>
+        </ol>
+
+        <h3>Method B: GA4 DebugView (for events)</h3>
+        <ol class="steps">
+          <li>
+            <strong>Install GA4 Debugger extension</strong>
+            <span>Search "Google Analytics Debugger" in Chrome Web Store. Enable it.</span>
+          </li>
+          <li>
+            <strong>Open GA4 DebugView</strong>
+            <span>In GA4: Admin &#8594; DebugView. Keep this tab open while you test.</span>
+          </li>
+          <li>
+            <strong>Trigger the conversion on the website</strong>
+            <span>On the client website, complete the action you want to track (e.g., fill out and submit a form). The event should appear in DebugView within 1–2 seconds.</span>
+          </li>
+          <li>
+            <strong>Verify event name and parameters</strong>
+            <span>Check the event name (e.g., "purchase") and its parameters (value, currency, transaction_id) appear correctly.</span>
+          </li>
+        </ol>
+
+        <h3>Method C: Chrome DevTools Network Tab</h3>
+        <ol class="steps">
+          <li><strong>Open DevTools</strong><span>Press F12 (or right-click &#8594; Inspect) &#8594; Network tab. Check "Preserve log".</span></li>
+          <li><strong>Filter requests</strong><span>Type <code>collect</code> in the filter box at the top of the Network panel.</span></li>
+          <li><strong>Reload the page</strong><span>A request to <code>google-analytics.com/g/collect</code> or <code>analytics.google.com/g/collect</code> should appear.</span></li>
+          <li><strong>Click the request</strong><span>Open the Payload tab. Confirm <code>tid=G-XXXXXXXXXX</code> matches your GA4 Measurement ID, and <code>en=page_view</code> (or the event name) is present.</span></li>
+        </ol>
+
+        <div class="devtools-mock" style="font-size:0.76rem">
+          <div class="devtools-toolbar">
+            <span class="dt-tab active">Network</span>
+            <input class="dt-filter" value="collect" readonly>
+          </div>
+          <div class="devtools-body">
+            <div class="dt-row header"><span>Name</span><span>Status</span><span>Initiator</span></div>
+            <div class="dt-row hit"><span class="dt-name">g/collect?v=2&amp;tid=G-ABC123&amp;en=page_view&amp;...</span><span>204</span><span>gtag.js</span></div>
+            <div class="dt-row hit"><span class="dt-name">g/collect?v=2&amp;tid=G-ABC123&amp;en=purchase&amp;...</span><span>204</span><span>gtag.js</span></div>
+          </div>
+        </div>
+
+        <div class="callout info">
+          <span class="callout-icon">&#8505;</span>
+          <p>GA4 responses are <strong>204 No Content</strong> — this is normal and correct. A 200 or 204 both mean the server received the hit successfully.</p>
+        </div>
+      </div>
+
+      <!-- Validate: Meta -->
+      <div class="tab-panel" id="val-meta">
+        <h3><span class="badge meta">Meta</span>Meta Pixel</h3>
+
+        <h3>Method A: Meta Pixel Helper Extension</h3>
+        <ol class="steps">
+          <li>
+            <strong>Install Meta Pixel Helper</strong>
+            <span>Search "Meta Pixel Helper" in the Chrome Web Store (published by Meta/Facebook). Install it.</span>
+          </li>
+          <li>
+            <strong>Visit the client website</strong>
+            <span>Click the extension icon (the small pixel icon in the toolbar) after the page loads.</span>
+          </li>
+          <li>
+            <strong>Check for a green indicator</strong>
+            <span>A green checkmark means the Pixel fired successfully on the page. It will show the Pixel ID and the events that fired (e.g., PageView).</span>
+          </li>
+          <li>
+            <strong>Navigate to the conversion page</strong>
+            <span>Complete the conversion flow (e.g., add to cart &#8594; checkout &#8594; thank you). On the confirmation page, open the extension again and verify the conversion event (e.g., "Purchase") appears.</span>
+          </li>
+        </ol>
+
+        <h3>Method B: Meta Events Manager Test Events</h3>
+        <ol class="steps">
+          <li>
+            <strong>Open Events Manager</strong>
+            <span>Go to business.facebook.com &#8594; Events Manager &#8594; select your Pixel.</span>
+          </li>
+          <li>
+            <strong>Go to Test Events</strong>
+            <span>Click "Test Events" tab. Enter the URL of the page you want to test. Click "Open Website".</span>
+          </li>
+          <li>
+            <strong>Trigger the conversion</strong>
+            <span>With the test window open, complete the action on the website. Events will appear in real time in Events Manager.</span>
+          </li>
+          <li>
+            <strong>Verify event details</strong>
+            <span>Confirm the event name, parameters (value, currency, content_ids), and that no duplicate events are showing.</span>
+          </li>
+        </ol>
+
+        <h3>Method C: Network Tab</h3>
+        <ol class="steps">
+          <li><strong>Open DevTools</strong><span>F12 &#8594; Network tab. Filter by: <code>facebook.net</code></span></li>
+          <li><strong>Load the page</strong><span>You should see a request to <code>connect.facebook.net/en_US/fbevents.js</code> — this means the Pixel code is loading.</span></li>
+          <li><strong>Filter by: <code>facebook.com/tr</code></strong><span>This is the pixel hit endpoint. Each event fires a request here.</span></li>
+          <li><strong>Click a request and open Payload</strong><span>Verify <code>id=YOUR_PIXEL_ID</code> and <code>ev=PageView</code> (or your event name) in the query string.</span></li>
+        </ol>
+
+        <div class="callout warn">
+          <span class="callout-icon">&#9888;</span>
+          <p>If you see "Pixel activated multiple times" in Meta Pixel Helper, the base code is installed twice on the page. This causes duplicate event counts and inflated conversion numbers. Flag this to the developer immediately.</p>
+        </div>
+      </div>
+
+      <!-- Validate: TikTok -->
+      <div class="tab-panel" id="val-tiktok">
+        <h3><span class="badge tiktok">TikTok</span>TikTok Pixel</h3>
+
+        <h3>Method A: TikTok Pixel Helper Extension</h3>
+        <ol class="steps">
+          <li>
+            <strong>Install TikTok Pixel Helper</strong>
+            <span>Search "TikTok Pixel Helper" in the Chrome Web Store. Install it.</span>
+          </li>
+          <li>
+            <strong>Visit the client website</strong>
+            <span>The extension icon shows a number badge indicating how many TikTok Pixel calls fired on the page.</span>
+          </li>
+          <li>
+            <strong>Click the icon</strong>
+            <span>See the Pixel ID, the events fired, and whether any errors exist. Green = success. Red = error.</span>
+          </li>
+          <li>
+            <strong>Test conversion flow</strong>
+            <span>Navigate through the full checkout/conversion flow. On the confirmation page, verify the purchase or conversion event fires (e.g., <code>CompletePayment</code>).</span>
+          </li>
+        </ol>
+
+        <h3>Method B: TikTok Ads Manager Test Events</h3>
+        <ol class="steps">
+          <li>
+            <strong>Go to Events in TikTok Ads Manager</strong>
+            <span>Assets &#8594; Events &#8594; select your Pixel &#8594; "Test Events" tab.</span>
+          </li>
+          <li>
+            <strong>Enter the test URL</strong>
+            <span>Type the URL you want to test. Click "Start Testing". A new tab opens with a tracking cookie active.</span>
+          </li>
+          <li>
+            <strong>Trigger the event</strong>
+            <span>In the opened tab, go through the conversion flow. Return to TikTok Ads Manager to see events appear in real time.</span>
+          </li>
+        </ol>
+
+        <h3>Method C: Network Tab</h3>
+        <ol class="steps">
+          <li><strong>Open DevTools</strong><span>F12 &#8594; Network tab. Filter by: <code>analytics.tiktok</code></span></li>
+          <li><strong>Trigger the page/event</strong><span>Look for a POST request to <code>analytics.tiktok.com/api/v1/event</code> or a hit to <code>analytics.tiktok.com</code>.</span></li>
+          <li><strong>Click the request</strong><span>Open Payload. Verify the Pixel ID and event name (e.g., <code>"event":"CompletePayment"</code>) in the JSON body.</span></li>
+        </ol>
+
+        <div class="callout info">
+          <span class="callout-icon">&#8505;</span>
+          <p>TikTok standard event names to know: <code>ViewContent</code>, <code>AddToCart</code>, <code>InitiateCheckout</code>, <code>CompletePayment</code>, <code>SubmitForm</code>, <code>Contact</code>. Use these exact names — custom event names may not optimise correctly.</p>
+        </div>
+      </div>
+
+      <!-- Validate: LINE -->
+      <div class="tab-panel" id="val-line">
+        <h3><span class="badge line">LINE</span>LINE Tag</h3>
+        <p>LINE does not have a dedicated browser extension. Validation uses the Network tab or the LINE Ads Platform test tool.</p>
+
+        <h3>Method A: LINE Ads Platform Test Conversion</h3>
+        <ol class="steps">
+          <li>
+            <strong>Open LINE Ads Platform</strong>
+            <span>ads.line.me &#8594; select your account &#8594; Conversions &#8594; Line Tag.</span>
+          </li>
+          <li>
+            <strong>Go to Conversion Setup &#8594; Test</strong>
+            <span>Under your conversion action, find the "Test" option. Enter the URL of the conversion page.</span>
+          </li>
+          <li>
+            <strong>Trigger the conversion on the website</strong>
+            <span>Open the test URL provided. Complete the conversion action. Return to LINE Ads Platform to see the event confirmed.</span>
+          </li>
+        </ol>
+
+        <h3>Method B: Chrome DevTools Network Tab (Primary Method)</h3>
+        <ol class="steps">
+          <li><strong>Open DevTools</strong><span>F12 &#8594; Network tab. Check "Preserve log". Filter by: <code>insight.line.me</code></span></li>
+          <li><strong>Load the page</strong><span>You should see a GET or POST request to <code>insight.line.me</code>. This is the LINE Tag base code firing.</span></li>
+          <li><strong>Navigate to the conversion page</strong><span>Complete the conversion. A second request to <code>insight.line.me</code> should appear with the conversion event parameters.</span></li>
+          <li>
+            <strong>Click the request and check the URL parameters</strong>
+            <span>Verify the Tag ID matches your LINE Ads account. Look for the event type parameter in the query string.</span>
+          </li>
+        </ol>
+
+        <div class="devtools-mock" style="font-size:0.76rem">
+          <div class="devtools-toolbar">
+            <span class="dt-tab active">Network</span>
+            <input class="dt-filter" value="insight.line.me" readonly>
+          </div>
+          <div class="devtools-body">
+            <div class="dt-row header"><span>Name</span><span>Status</span><span>Type</span></div>
+            <div class="dt-row hit"><span class="dt-name">insight.line.me/v2/collect?...</span><span>200</span><span>image</span></div>
+            <div class="dt-row hit"><span class="dt-name">insight.line.me/v2/collect?type=purchase&amp;...</span><span>200</span><span>image</span></div>
+          </div>
+        </div>
+
+        <h3>Method C: View Page Source</h3>
+        <ol class="steps">
+          <li>
+            <strong>Right-click anywhere on the page &#8594; "View Page Source"</strong>
+            <span>Press Ctrl+F (or Cmd+F) and search for <code>insight.line.me</code> or the LINE Tag ID.</span>
+          </li>
+          <li>
+            <strong>If found in the source</strong>
+            <span>The tag code is present. This confirms it was installed, though it doesn't confirm it fires correctly — use Network tab for that.</span>
+          </li>
+          <li>
+            <strong>If not found</strong>
+            <span>The tag may be injected by GTM (it won't appear in raw HTML). Use the Network tab method instead.</span>
+          </li>
+        </ol>
+
+        <div class="callout warn">
+          <span class="callout-icon">&#9888;</span>
+          <p>For LINE campaigns in Thailand, always test on a mobile device or in Chrome mobile emulator (F12 &#8594; Toggle Device Toolbar) as well. LINE app users will access landing pages through LINE's in-app browser, which may behave differently.</p>
+        </div>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s3')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('s5')">GTM Walkthrough &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S5: GTM -->
+    <div class="section" id="s5">
+      <h1>GTM Walkthrough</h1>
+      <p class="lead">Google Tag Manager (GTM) is the most common way tags are deployed on a website. Instead of editing the website's HTML directly, all tags are managed centrally in GTM and pushed live without a developer code release.</p>
+
+      <h2>GTM's Three Core Concepts</h2>
+      <div class="flow-diagram">
+        <div class="gtm-tree">
+          <div class="gtm-container">
+            <div class="gtm-container-label">GTM Container (one per website)</div>
+            <div class="gtm-cols">
+              <div class="gtm-col tags">
+                <div class="gtm-col-label">Tags — What fires</div>
+                <div class="gtm-item">GA4 Configuration</div>
+                <div class="gtm-item">Meta Pixel</div>
+                <div class="gtm-item">Google Ads Conversion</div>
+                <div class="gtm-item">TikTok Pixel</div>
+                <div class="gtm-item">LINE Tag (Custom HTML)</div>
+              </div>
+              <div class="gtm-col triggers">
+                <div class="gtm-col-label">Triggers — When it fires</div>
+                <div class="gtm-item">All Pages</div>
+                <div class="gtm-item">Page URL contains /thank-you</div>
+                <div class="gtm-item">Form Submission</div>
+                <div class="gtm-item">Click — button ID = "buy-now"</div>
+                <div class="gtm-item">Scroll Depth 50%</div>
+              </div>
+              <div class="gtm-col vars">
+                <div class="gtm-col-label">Variables — Values passed</div>
+                <div class="gtm-item">Transaction ID</div>
+                <div class="gtm-item">Order Value</div>
+                <div class="gtm-item">Product Name</div>
+                <div class="gtm-item">User Type (new/return)</div>
+                <div class="gtm-item">Currency</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:1rem">A <strong>Tag</strong> only fires when its assigned <strong>Trigger</strong> condition is met. It reads data from <strong>Variables</strong> to send accurate information to the platform.</p>
+
+      <h2>How GTM Gets onto a Website</h2>
+      <ol class="steps">
+        <li>
+          <strong>Developer installs the GTM snippet once</strong>
+          <span>Two snippets go into every page of the website: one in the <code>&lt;head&gt;</code> and one immediately after the <code>&lt;body&gt;</code> tag. This is a one-time task for the developer.</span>
+        </li>
+        <li>
+          <strong>All future tags go through GTM</strong>
+          <span>The developer never touches the site for tag changes again. You (or the tracking team) manage everything from the GTM interface.</span>
+        </li>
+        <li>
+          <strong>Preview before publishing</strong>
+          <span>Use GTM's Preview mode to test tags without affecting the live site. Only after verifying everything works do you publish.</span>
+        </li>
+      </ol>
+
+      <h2>Adding a Tag in GTM — Step by Step</h2>
+      <p>Example: Adding a Meta Pixel base tag.</p>
+      <ol class="steps">
+        <li>
+          <strong>Go to tagmanager.google.com</strong>
+          <span>Open your workspace for the client's container.</span>
+        </li>
+        <li>
+          <strong>Tags &#8594; New</strong>
+          <span>Click the "New" button in the Tags section of the left sidebar.</span>
+        </li>
+        <li>
+          <strong>Name the tag</strong>
+          <span>Use a clear naming convention: <code>[Platform] - [Tag Type] - [Description]</code>. Example: <code>Meta - Pixel - Base Code</code></span>
+        </li>
+        <li>
+          <strong>Click "Tag Configuration"</strong>
+          <span>Choose a tag type. For Meta, there is no built-in type — select "Custom HTML". Paste the Meta Pixel base code into the HTML box.</span>
+        </li>
+        <li>
+          <strong>Click "Triggering"</strong>
+          <span>Select "All Pages" — the base pixel should fire on every page. For a conversion tag, create a new trigger: Page URL &#8594; contains &#8594; <code>/thank-you</code>.</span>
+        </li>
+        <li>
+          <strong>Save the tag</strong>
+          <span>Click Save. The tag is saved but NOT yet live.</span>
+        </li>
+        <li>
+          <strong>Preview and test</strong>
+          <span>Click Preview (top right). Enter the website URL. GTM Preview mode opens. Navigate the site — you will see which tags fire on each page interaction.</span>
+        </li>
+        <li>
+          <strong>Submit and Publish</strong>
+          <span>Once satisfied with Preview testing, click Submit &#8594; add a version name (e.g., "Add Meta Pixel") &#8594; Publish. The tag is now live.</span>
+        </li>
+      </ol>
+
+      <h2>Using GTM Preview Mode</h2>
+      <p>GTM Preview is your primary testing tool. Here is what to look for:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Status in Preview</th><th>Meaning</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--ok)"><strong>Tags Fired</strong></td><td>Tag fired on this page/event</td><td>Good — verify it fired at the right moment</td></tr>
+            <tr><td style="color:var(--error)"><strong>Tags Not Fired</strong></td><td>Trigger condition was not met</td><td>Check the trigger URL/condition matches reality</td></tr>
+            <tr><td style="color:var(--warn)"><strong>Tag Paused</strong></td><td>Tag exists but was manually paused</td><td>Un-pause if it should be active</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn">
+        <span class="callout-icon">&#9888;</span>
+        <p><strong>GTM Preview vs. Live.</strong> Preview mode uses a special cookie in your browser. Other users visiting the site will NOT see preview traffic. Always test in preview BEFORE publishing to avoid shipping a broken tag to the live environment.</p>
+      </div>
+
+      <h2>GTM Tag Naming Convention</h2>
+      <p>Consistent naming saves time for everyone on the team. Use this format:</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+[Platform] - [Tag Type] - [Scope/Event]
+
+Examples:
+  GA4 - Config - Base Tag
+  GA4 - Event - Purchase
+  Google Ads - Conversion - Form Submit
+  Meta - Pixel - Base Code
+  Meta - Event - Purchase (Thank You Page)
+  TikTok - Pixel - Base Code
+  TikTok - Event - CompletePayment
+  LINE - Tag - Base Code
+  LINE - Conversion - Purchase
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s4')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('s6')">Validation Checklist &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S6: Checklist -->
+    <div class="section" id="s6">
+      <h1>Pre-Launch Validation Checklist</h1>
+      <p class="lead">Use this checklist before any campaign goes live. Click each item to mark it as complete. Track your readiness as you go through the checklist.</p>
+
+      <h2>Before You Start</h2>
+      <ul>
+        <li>Have the live campaign landing page URL open in Chrome.</li>
+        <li>Disable any ad blockers or open a clean Chrome profile.</li>
+        <li>Have the campaign platform open (Google Ads / Meta / TikTok / LINE).</li>
+        <li>Know the Pixel/Tag/Conversion IDs you expect to see.</li>
+      </ul>
+
+      <h2>Tag Installation</h2>
+      <p class="checklist-progress" id="inst-progress">0 of 5 complete</p>
+      <ul class="checklist" id="checklist-inst">
+        <li onclick="toggleCheck(this, 'inst-progress', 5)"><div class="check-box"></div><span class="check-text">Base tag / pixel code is present on the homepage (check Network tab or Tag Assistant)</span></li>
+        <li onclick="toggleCheck(this, 'inst-progress', 5)"><div class="check-box"></div><span class="check-text">Base tag is present on the campaign landing page (not just homepage)</span></li>
+        <li onclick="toggleCheck(this, 'inst-progress', 5)"><div class="check-box"></div><span class="check-text">Conversion tag is present on the thank-you / confirmation page</span></li>
+        <li onclick="toggleCheck(this, 'inst-progress', 5)"><div class="check-box"></div><span class="check-text">Tag IDs in the code match the platform account IDs (no copy/paste errors)</span></li>
+        <li onclick="toggleCheck(this, 'inst-progress', 5)"><div class="check-box"></div><span class="check-text">No duplicate base tags found on any single page (Meta Pixel Helper would flag this)</span></li>
+      </ul>
+
+      <h2>Tag Firing</h2>
+      <p class="checklist-progress" id="fire-progress">0 of 6 complete</p>
+      <ul class="checklist" id="checklist-fire">
+        <li onclick="toggleCheck(this, 'fire-progress', 6)"><div class="check-box"></div><span class="check-text">PageView / base tag fires on page load (confirmed in Network tab or browser extension)</span></li>
+        <li onclick="toggleCheck(this, 'fire-progress', 6)"><div class="check-box"></div><span class="check-text">Conversion event fires ONLY on the confirmation / thank-you page (not on all pages)</span></li>
+        <li onclick="toggleCheck(this, 'fire-progress', 6)"><div class="check-box"></div><span class="check-text">Network requests return 200 or 204 status (not 4xx or blocked)</span></li>
+        <li onclick="toggleCheck(this, 'fire-progress', 6)"><div class="check-box"></div><span class="check-text">Events appear in platform real-time / test events tool within 60 seconds</span></li>
+        <li onclick="toggleCheck(this, 'fire-progress', 6)"><div class="check-box"></div><span class="check-text">Conversion value and currency are passed correctly (if applicable)</span></li>
+        <li onclick="toggleCheck(this, 'fire-progress', 6)"><div class="check-box"></div><span class="check-text">No JavaScript errors in the browser console (F12 &#8594; Console tab) on the conversion page</span></li>
+      </ul>
+
+      <h2>GTM Health Check</h2>
+      <p class="checklist-progress" id="gtm-progress">0 of 4 complete</p>
+      <ul class="checklist" id="checklist-gtm">
+        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">GTM container has been published (not just saved / in preview)</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">Tags verified in GTM Preview mode before publishing</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">GTM container snippet is present in the website source (search for "googletagmanager.com/gtm.js" in page source)</span></li>
+        <li onclick="toggleCheck(this, 'gtm-progress', 4)"><div class="check-box"></div><span class="check-text">No leftover test / dev tags in GTM that are still active on production</span></li>
+      </ul>
+
+      <h2>Platform-Specific Checks</h2>
+      <p class="checklist-progress" id="platform-progress">0 of 5 complete</p>
+      <ul class="checklist" id="checklist-platform">
+        <li onclick="toggleCheck(this, 'platform-progress', 5)"><div class="check-box"></div><span class="check-text"><strong>Google:</strong> GA4 DebugView shows the conversion event with correct parameters (value, currency, transaction_id)</span></li>
+        <li onclick="toggleCheck(this, 'platform-progress', 5)"><div class="check-box"></div><span class="check-text"><strong>Meta:</strong> Events Manager Test Events confirms the Purchase (or custom event) with no warnings</span></li>
+        <li onclick="toggleCheck(this, 'platform-progress', 5)"><div class="check-box"></div><span class="check-text"><strong>TikTok:</strong> TikTok Pixel Helper shows green status with correct event name on confirmation page</span></li>
+        <li onclick="toggleCheck(this, 'platform-progress', 5)"><div class="check-box"></div><span class="check-text"><strong>LINE:</strong> Network tab confirms insight.line.me request fires on conversion page with correct Tag ID</span></li>
+        <li onclick="toggleCheck(this, 'platform-progress', 5)"><div class="check-box"></div><span class="check-text">Conversion window (lookback period) is set correctly in the platform (e.g., 30-day click, 1-day view)</span></li>
+      </ul>
+
+      <div class="callout tip" style="margin-top:1.5rem">
+        <span class="callout-icon">&#10003;</span>
+        <p>Screenshot your validation evidence (Tag Assistant results, Network tab requests, Events Manager test events) and attach them to the campaign launch documentation. This protects you if a client later disputes conversion data.</p>
+      </div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s5')">&#8592; Back</button>
+        <button class="btn btn-primary" onclick="goTo('s7')">Knowledge Check &#8594;</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ S7: Quiz -->
+    <div class="section" id="s7">
+      <h1>Knowledge Check</h1>
+      <p class="lead">Test what you have learned. Select the best answer for each question.</p>
+
+      <div class="quiz-card" id="q1">
+        <div class="quiz-q">1. A campaign has been running for 2 weeks with zero reported conversions, but the client says sales are happening. What is the MOST likely cause?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answerQuiz('q1', this, false, 'The campaign settings are irrelevant if the conversion tag has never confirmed firing.')">The campaign bidding strategy is wrong.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q1', this, true, 'Correct. The conversion tag is either not installed on the confirmation page, not firing, or firing on the wrong page. Always validate the conversion tag first.')">The conversion tag is not installed or not firing on the confirmation page.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q1', this, false, 'Audience targeting affects who sees the ads, not whether conversions are tracked.')">The audience targeting is too narrow.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q1', this, false, 'Ad creative does not affect whether a conversion tag records completed purchases.')">The ad creative is not engaging enough.</div>
+        </div>
+        <div class="quiz-feedback" id="q1-fb"></div>
+      </div>
+
+      <div class="quiz-card" id="q2">
+        <div class="quiz-q">2. You open Chrome DevTools, go to the Network tab, filter by "facebook.net", and see no requests. What does this most likely mean?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answerQuiz('q2', this, false, 'Meta\'s server being down would be highly unusual and would affect global campaigns. A missing tag is far more likely.')">Meta\'s servers are down.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q2', this, false, 'HTTPS has no bearing on whether a pixel loads or not.')">The website is using HTTP instead of HTTPS.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q2', this, true, 'Correct. If the Meta Pixel base code is not installed on the page, the fbevents.js library never loads, and no requests to facebook.net will appear.')">The Meta Pixel base code is not installed on this page.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q2', this, false, 'GA4 sends requests to google-analytics.com, not facebook.net.')">The GA4 tag is blocking the Meta Pixel from loading.</div>
+        </div>
+        <div class="quiz-feedback" id="q2-fb"></div>
+      </div>
+
+      <div class="quiz-card" id="q3">
+        <div class="quiz-q">3. In GTM, you add a new conversion tag and click Save. Is this tag now live on the website?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answerQuiz('q3', this, false, 'Saving only stores the draft in GTM. The live website is unchanged until you publish.')">Yes — saving in GTM immediately updates the live website.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q3', this, true, 'Correct. In GTM, you must go through Preview (to test) and then Submit + Publish to push changes to the live website. Save only stores a draft.')">No — you must Submit and Publish the container for changes to go live.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q3', this, false, 'The developer does not need to re-install anything. GTM handles deployment automatically once published.')">No — you need the developer to re-install the GTM snippet first.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q3', this, false, 'Preview mode lets you test but does not make the tag live for real visitors.')">Yes — but only in GTM Preview mode, which is live for all users.</div>
+        </div>
+        <div class="quiz-feedback" id="q3-fb"></div>
+      </div>
+
+      <div class="quiz-card" id="q4">
+        <div class="quiz-q">4. Meta Pixel Helper shows "Pixel activated multiple times" on the thank-you page. What should you do?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answerQuiz('q4', this, false, 'Increasing budget does not fix double-counting. In fact, it would make the inflated reporting worse.')">Increase the campaign budget to compensate for the potential under-reporting.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q4', this, false, 'The campaign does not need to be paused — this is a tracking issue, not a campaign delivery issue.')">Pause the campaign immediately until it is resolved.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q4', this, true, 'Correct. Multiple activations mean the Pixel base code (or conversion event) is firing more than once per page load, causing duplicate conversions. Flag it to the developer to remove the duplicate instance.')">Flag it to the developer — the Pixel is installed twice, causing duplicate conversion counting.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q4', this, false, 'Multiple activations indicate duplicate code, not a missing Pixel ID. The pixel is firing — just more than once.')">Add the Pixel ID into the Campaign settings to connect it properly.</div>
+        </div>
+        <div class="quiz-feedback" id="q4-fb"></div>
+      </div>
+
+      <div class="quiz-card" id="q5">
+        <div class="quiz-q">5. Which of these is the correct Chrome DevTools Network tab filter to find TikTok Pixel requests?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answerQuiz('q5', this, false, 'That filter finds Meta Pixel requests, not TikTok.')">facebook.net</div>
+          <div class="quiz-opt" onclick="answerQuiz('q5', this, false, 'That filter finds GA4 requests.')">collect</div>
+          <div class="quiz-opt" onclick="answerQuiz('q5', this, true, 'Correct. TikTok Pixel sends requests to analytics.tiktok.com. Filtering for "tiktok" or "analytics.tiktok" will surface these hits.')">analytics.tiktok</div>
+          <div class="quiz-opt" onclick="answerQuiz('q5', this, false, 'That filter finds LINE Tag requests.')">insight.line.me</div>
+        </div>
+        <div class="quiz-feedback" id="q5-fb"></div>
+      </div>
+
+      <div class="quiz-card" id="q6">
+        <div class="quiz-q">6. You are validating a LINE Tag but cannot find a dedicated browser extension for it. What is your best validation method?</div>
+        <div class="quiz-options">
+          <div class="quiz-opt" onclick="answerQuiz('q6', this, false, 'That is Meta\'s test tool, not LINE\'s.')">Use Meta Events Manager Test Events.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q6', this, true, 'Correct. With no dedicated extension, the Chrome DevTools Network tab is the primary method. Filter by insight.line.me to see LINE Tag requests.')">Use Chrome DevTools Network tab, filtering for insight.line.me.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q6', this, false, 'Tag Assistant only works for Google tags (GA4, Google Ads, GTM). It does not detect LINE Tags.')">Use Google Tag Assistant — it detects all tracking pixels.</div>
+          <div class="quiz-opt" onclick="answerQuiz('q6', this, false, 'View page source shows hardcoded HTML but will not show tags injected dynamically by GTM.')">Right-click &#8594; View Page Source and search for LINE.</div>
+        </div>
+        <div class="quiz-feedback" id="q6-fb"></div>
+      </div>
+
+      <div class="quiz-score" id="quiz-score"></div>
+
+      <div class="nav-btns">
+        <button class="btn btn-outline" onclick="goTo('s6')">&#8592; Back to Checklist</button>
+        <button class="btn btn-primary" onclick="goTo('s0')">Start Over</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ── Section management ──────────────────────────────────────
+  const SECTIONS = ['s0','s1','s2','s3','s4','s5','s6','s7'];
+  let currentIndex = 0;
+
+  function goTo(id) {
+    SECTIONS.forEach(s => {
+      document.getElementById(s).classList.remove('active');
+    });
+    document.querySelectorAll('.nav-item').forEach(n => {
+      n.classList.toggle('active', n.dataset.section === id);
+    });
+    document.getElementById(id).classList.add('active');
+    currentIndex = SECTIONS.indexOf(id);
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress() {
+    const pct = Math.round((currentIndex / (SECTIONS.length - 1)) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent =
+      'Section ' + (currentIndex + 1) + ' of ' + SECTIONS.length;
+  }
+
+  // ── Platform tabs ───────────────────────────────────────────
+  function switchTab(group, platform) {
+    const panels = document.querySelectorAll('[id^="' + group + '-"]');
+    panels.forEach(p => p.classList.remove('active'));
+    const btns = document.querySelectorAll('#' + group + '-tabs .tab-btn');
+    btns.forEach(b => b.classList.remove('active'));
+
+    const target = document.getElementById(group + '-' + platform);
+    if (target) target.classList.add('active');
+    btns.forEach(b => {
+      if (b.classList.contains(platform)) b.classList.add('active');
+    });
+  }
+
+  // ── Accordion ───────────────────────────────────────────────
+  function toggleAccordion(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    btn.classList.toggle('open', !isOpen);
+    body.classList.toggle('open', !isOpen);
+  }
+
+  // ── Checklist ───────────────────────────────────────────────
+  function toggleCheck(li, progressId, total) {
+    li.classList.toggle('done');
+    const box = li.querySelector('.check-box');
+    box.textContent = li.classList.contains('done') ? '✓' : '';
+    updateChecklistProgress(progressId, total);
+  }
+
+  function updateChecklistProgress(progressId, total) {
+    const groupId = 'checklist-' + progressId.replace('-progress', '');
+    const list = document.getElementById(groupId);
+    if (!list) return;
+    const done = list.querySelectorAll('.done').length;
+    const label = document.getElementById(progressId);
+    if (label) label.textContent = done + ' of ' + total + ' complete';
+  }
+
+  // ── Quiz ────────────────────────────────────────────────────
+  let answeredCount = 0;
+  const totalQuestions = 6;
+
+  function answerQuiz(questionId, selectedEl, isCorrect, explanation) {
+    const card = document.getElementById(questionId);
+    if (card.dataset.answered) return;
+    card.dataset.answered = '1';
+
+    const opts = card.querySelectorAll('.quiz-opt');
+    opts.forEach(o => o.classList.add('locked'));
+    selectedEl.classList.add(isCorrect ? 'correct' : 'wrong');
+
+    const fb = document.getElementById(questionId + '-fb');
+    fb.textContent = explanation;
+    fb.classList.add('show', isCorrect ? 'ok' : 'bad');
+
+    if (isCorrect) answeredCount++;
+
+    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    if (answered === totalQuestions) {
+      const scoreEl = document.getElementById('quiz-score');
+      const pct = Math.round((answeredCount / totalQuestions) * 100);
+      let msg = '';
+      if (pct === 100) msg = 'Perfect score. You are ready to validate any tag independently.';
+      else if (pct >= 67) msg = 'Good result. Review the sections for any questions you missed.';
+      else msg = 'Keep going. Re-read the relevant sections and try again.';
+      scoreEl.innerHTML = 'Score: ' + answeredCount + ' / ' + totalQuestions + ' (' + pct + '%)<br><span style="font-size:0.9rem;font-weight:400;color:var(--gray)">' + msg + '</span>';
+      scoreEl.style.display = 'block';
+    }
+  }
+
+  // ── Copy code ───────────────────────────────────────────────
+  function copyCode(btn) {
+    const block = btn.parentElement;
+    const text = block.textContent.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied';
+      setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+    });
+  }
+
+  // Init
+  updateProgress();
+</script>
+</body>
+</html>
